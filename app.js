@@ -1,9 +1,10 @@
 var express = require("express");
+var bodyParser = require('body-parser');
 
 var app = express();
 app.use(bodyParser.json());
 
-app.get("/",async function(req, res, next){
+app.post("/",async function(req, res, next){
     const body=req.body;
     console.log(body)
     res.send("你好");
@@ -23,4 +24,10 @@ res.status(err.status || 500);
 res.send('error');
 });
 
-app.listen(3000);
+var server = app.listen(3000, function () {
+    var host = server.address().address
+    var port = server.address().port  
+    console.log("server start on: http://%s:%s", host, port)
+   
+});
+
