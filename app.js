@@ -6,12 +6,20 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post("/intent",async function(req, res, next){
-    const body=req.body;
-    console.log(body);
-    var intents = await dbApi.getIntentsFor("course_record");
+    const msg= req.body;
+    console.log("receive req msg", msg);
+    var intents = await dbApi.getIntentsFor(agent.agent);
     console.log("intents is", intents)
     res.send(intents);
 });
+
+app.post("/paras", async function(req, res, next){
+    const msg = req.body
+    console.log("receive req msg", msg)
+    var paras = await dbApi.getParasFor(msg)
+    console.log("response is:", paras)
+    res.send(paras)
+})
 
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
