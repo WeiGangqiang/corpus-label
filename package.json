@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/WeiGangqiang/corpus-label#readme",
   "dependencies": {
+    "arangojs": "^5.8.0",
     "express": "^4.16.3"
   }
 }

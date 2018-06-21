@@ -1,13 +1,16 @@
 var express = require("express");
 var bodyParser = require('body-parser');
+const dbApi = require('./db-api.js')
 
 var app = express();
 app.use(bodyParser.json());
 
-app.post("/",async function(req, res, next){
+app.post("/intent",async function(req, res, next){
     const body=req.body;
-    console.log(body)
-    res.send("你好");
+    console.log(body);
+    var intents = await dbApi.getIntentsFor("course_record");
+    console.log("intents is", intents)
+    res.send(intents);
 });
 
 app.use(function(req, res, next) {
