@@ -33,7 +33,7 @@ app.post("/corpus", async function(req, res){
     const msg = req.body
     const agent = msg.agent
     const intentId = msg.intentId
-    const user_say = msg.user_say
+    const sentence = msg.sentence
 
     res.send({result: "success"})
 })
