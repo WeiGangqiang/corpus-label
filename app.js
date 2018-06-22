@@ -32,11 +32,8 @@ app.get("/parameters", async function(req, res){
 
 app.post("/corpus", async function(req, res){
     const msg = req.body
-    const agent = msg.agent
-    const intentId = msg.intentId
-    const sentence = msg.sentence
-
-    res.send({result: "success"})
+    var ret = await dbApi.addSentence(msg)
+    res.send(ret)
 })
 
 app.get("/unknown-says", async function(req, res){

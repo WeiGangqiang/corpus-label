@@ -41,6 +41,28 @@ async function getEntityValuesFor(agent, entityName){
     return ret
 }
 
+async function addSentence(msg){
+    const agent = msg.agent
+    const intentId = msg.intentId
+    const sentence = msg.sentence
+    const accept = msg.accept
+    var retCode = "success"
+    if(accept == true){
+        const collectionName = getIntentCollectionName(agent);
+        const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                     UPDATE doc WITH {
+                        positive:APPEND(doc.positive,'${sentence}', true)
+                     }in ${collectionName}`
+
+        console.info("aql is :",aql)
+        await db.query(aql)
+                .then( cursor => cursor.all())
+                .then( ret => console.info("result is ", ret),
+                    err =>  {console.error("error log", err); retCode = "add failed"})
+    }
+    return {retcode: retCode}
+}
+
 
 async function getParasFor(intent){
     var parameters = []
@@ -69,6 +91,8 @@ async function getParasFor(intent){
 
 module.exports={
     getIntentsFor,
-    getParasFor 
+    getParasFor,
+    getEntityValuesFor,
+    addSentence 
 }
 
