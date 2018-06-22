@@ -7,11 +7,11 @@ db.useDatabase('xiaoda-corpus');
 db.useBasicAuth('root','KingDom1234')
 
 function getIntentCollectionName(agent){
-    return agent +"_intent"
+    return agent.replace("-","_") +"_intent"
 }
 
 function getEntityCollectionName(agent){
-    return agent + "_entity"
+    return agent.replace("-","_") + "_entity"
 }
 
 function format(intents, ret){
@@ -58,10 +58,11 @@ async function getParasFor(intent){
         var entityName = (entityNames.length > 1) ? entityNames[1]: entityNames[0]
         var entityInfo = await getEntityValuesFor(entityAgent, entityName)
         parameters[i].values = entityInfo.values
+        parameters[i].choices = entityInfo.choices
+        parameters[i].subEntities = entityInfo.subEntities
         parameters[i].kind = entityInfo.kind
     }
 
-    
     return parameters
 }
 

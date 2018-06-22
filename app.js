@@ -5,16 +5,24 @@ const dbApi = require('./db-api.js')
 var app = express();
 app.use(bodyParser.json());
 
-app.post("/intent",async function(req, res, next){
-    const msg= req.body;
-    console.log("receive req msg", msg);
-    var intents = await dbApi.getIntentsFor(agent.agent);
+app.get("/agents", async function(req, res){
+    const host = req.query.host;
+    console.log("receive query agents para:", host)
+    res.send(["course-record","question-answer"])
+})
+
+app.get("/intents",async function(req, res){
+    const agent= req.query.agent;
+    console.log("receive req msg", agent);
+    var intents = await dbApi.getIntentsFor(agent);
     console.log("intents is", intents)
     res.send(intents);
 });
 
-app.post("/paras", async function(req, res, next){
-    const msg = req.body
+app.get("/parameters", async function(req, res){
+    var msg = {}
+    msg.agent = req.query.agent
+    msg.intentId = req.query.intentId
     console.log("receive req msg", msg)
     var paras = await dbApi.getParasFor(msg)
     console.log("response is:", paras)
