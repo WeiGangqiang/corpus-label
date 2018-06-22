@@ -122,3 +122,24 @@
 ]
 
 ```
+## 5.0 添加语料
+* 请求方式
+
+``` post http://localhost:port/corpus```
+
+* 参数
+
+```
+{
+ "sentence": "帮我查查[礼拜日]L0的课表",
+ "accept"  : true,
+ "intentId": "14700686044264578",
+ "intent"  :  "record-course"
+}
+```
+
+* 响应
+```
+{ retcode: "success" }
+
+```
