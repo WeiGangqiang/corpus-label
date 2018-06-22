@@ -1,10 +1,11 @@
 var arango =  require('arangojs');
+var config = require('./config.js')
 Database = arango.Database;
 
-db = new Database('http://47.100.18.115:8529');
+db = new Database(`http://${config.host}:${config.port}`);
 
 db.useDatabase('xiaoda-corpus');
-db.useBasicAuth('root','KingDom1234')
+db.useBasicAuth(config.user,config.password)
 
 function getIntentCollectionName(agent){
     return agent.replace("-","_") +"_intent"
