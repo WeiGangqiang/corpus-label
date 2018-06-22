@@ -1,6 +1,7 @@
 var express = require("express");
 var bodyParser = require('body-parser');
 const dbApi = require('./db-api.js')
+const logDb = require("./log-api.js")
 
 var app = express();
 app.use(bodyParser.json());
@@ -39,14 +40,9 @@ app.post("/corpus", async function(req, res){
 })
 
 app.get("/unknown-says", async function(req, res){
-    var unknowns = ["的科一刻不知道",
-                    "暂停播放春秋",
-                    "停机他听身体提特带天的体力和兔子",
-                    "我们家谁的神经病都读课文的时候要快一点小爱同学",
-                    "我们俩谁是神经病",
-                    "打开如意古诗词"]
-
-    res.send(unknowns)
+    const agent= req.query.agent;
+    var ret = await logDb.getUnknownSays(agent)
+    res.send(ret)
 })
 
 app.use(function(req, res, next) {
