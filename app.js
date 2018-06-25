@@ -3,7 +3,9 @@ var bodyParser = require('body-parser');
 const dbApi = require('./db-api.js')
 const logDb = require("./log-api.js")
 
+var cors = require('cors');  
 var app = express();
+app.use(cors())
 app.use(bodyParser.json());
 
 app.get("/agents", async function(req, res){
