@@ -2,7 +2,7 @@ var arango =  require('arangojs');
 var config = require('./config.js')
 Database = arango.Database;
 
-var db2 = new Database(`http://${config.host}:${config.port}`);
+var db2 = new Database(`http://${config.host2}:${config.port}`);
 
 async function getUnknownSays(agent) {
     db2.useDatabase(`${agent}-logs`);
