@@ -122,7 +122,215 @@
 ]
 
 ```
-## 5.0 添加语料
+## 5.0 查询简化模型
+* 请求方式
+``` post http://localhost:port/simplifier```
+* 参数
+
+```
+{
+  "sentence"  : "你的世界是谁"
+}
+```
+
+* 响应
+```
+{ retcode: "success",
+  sentence : "你是谁"
+}
+
+```
+
+## 6.0 语料规则
+
+### 6.1 查询语料规则
+* 请求方式
+
+``` get http://localhost:port/pattern```
+
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent的名字（ course-record） |
+| intentId | `String` | agent的名字（例如"14700686044264578") |
+
+
+* 响应
+```
+{ retcode: "success",
+  pattens : [
+      "今天[星期二]L0, 你[高兴]S0吗",
+      "今天[星期二]L0, 你[开心]S0吗"
+       ]
+}
+
+```
+
+
+### 6.2 添加语料规则
+* 请求方式
+
+``` post http://localhost:port/pattern```
+
+* 参数
+
+```
+{
+  "pattern"  : "今天[星期二]L0, 你[高兴]S0吗",
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"
+  patternId: 2}
+
+```
+
+### 6.3 更新语料规则
+* 请求方式
+
+``` put http://localhost:port/pattern```
+
+* 参数
+
+```
+{
+  "pattern"  : "今天[星期二]L0, 你[高兴]S0吗",
+  "patternId": 2
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"}
+
+```
+
+### 6.4 删除语料规则
+* 请求方式
+
+``` delete http://localhost:port/pattern```
+
+* 参数
+
+```
+{
+  "patternId": 2
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"}
+
+```
+
+##7.0 近义词
+### 7.1 查询近义词
+* 请求方式
+
+``` get http://localhost:port/phrase```
+
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent的名字（ course-record） |
+| intentId | `String` | agent的名字（例如"14700686044264578") |
+
+
+* 响应
+```
+{ retcode: "success",
+  datas :[
+      {label: S0, values: ["美丽", "漂亮"]},
+      {label: S1, values: ["丑", "难看"]}]
+}
+```
+
+
+### 7.2 添加近义词
+* 请求方式
+
+``` post http://localhost:port/phrase```
+
+* 参数
+
+```
+{
+  "values"  : ["美丽", "漂亮"],
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"
+  label: S2}
+
+```
+
+### 7.3 更新近义词
+* 请求方式
+
+``` put http://localhost:port/phrase```
+
+* 参数
+
+```
+{
+  "values"  : ["美丽", "漂亮"],
+  "label"   : S2
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"}
+
+```
+
+### 7.4 删除近义词
+* 请求方式
+
+``` delete http://localhost:port/phrase```
+
+* 参数
+
+```
+{
+  "label"    : S2
+  "intentId" : "14700686044264578",
+  "intent"   : "record-course,
+  "agent"    : "course-record"
+}
+```
+
+* 响应
+```
+{ retcode: "success"}
+
+```
+
+## 8.0 添加语料
 * 请求方式
 
 ``` post http://localhost:port/corpus```
