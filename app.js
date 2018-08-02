@@ -1,7 +1,9 @@
 var express = require("express");
+var request = require('request');
 var bodyParser = require('body-parser');
 const dbApi = require('./db-api.js')
 const logDb = require("./log-api.js")
+const postJson = require('./postjson.js');
 
 var cors = require('cors');  
 var app = express();
@@ -78,6 +80,12 @@ app.put("/pattern", async function(req, res){
     intent.intentId = req.body.intentId
     console.log("receive req msg", req.body)
     var ret = await dbApi.updatePatternFor(intent, req.body.patternId, req.body.pattern)
+    res.send(ret)
+})
+
+app.post("/simplifier", async function(req, res){
+    var ret = await postJson("http://localhost:5000/api/predict", {x: req.body.sentence})
+    console.log('simplifer result ', ret)
     res.send(ret)
 })
 
