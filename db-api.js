@@ -89,10 +89,96 @@ async function getParasFor(intent){
     return parameters
 }
 
+async function getArrayListFor(intent, fieldName){
+    var ret = []
+    console.log(`get array for agent ${intent.agent} intent id ${intent.intentId}, fieldName ${fieldName}`)
+    const key = intent.intentId;
+    const agent = intent.agent;
+    const collectionName = getIntentCollectionName(agent);
+    await db.query(`FOR doc in ${collectionName} FILTER doc._key== '${key}' RETURN doc.${fieldName}`)
+            .then( cursor => cursor.all())
+            .then( paras => ret = paras[0],
+                   err => console.error("get array list fail ", err))
+
+}
+
+async function addToArrayTo(intent, fieldName, value){
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}:APPEND(doc.${fieldName},'${value}', true)
+                 }in ${collectionName}`
+
+    console.info("add to array aql is :",aql)
+    await db.query(aql)
+            .then( cursor => cursor.all())
+            .then( ret => console.info("add success, result is ", ret),
+                err =>  {console.error("add fail, log is ", err); retCode = "add failed"})
+
+}
+
+async function removeFromArray(intent, fieldName, index){
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}:REMOVE_NTH(doc.${fieldName},${index})
+                 }in ${collectionName}`
+
+    console.info("remove from array aql is :",aql)
+    await db.query(aql)
+            .then( cursor => cursor.all())
+            .then( ret => console.info("remove success, result is ", ret),
+                err =>  {console.error("remove fail, log is ", err); retCode = "add failed"})
+  
+}
+
+async function updateArrayItem(intent, fieldName, index, value){
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}:UNION(SLICE(doc.${fieldName},0,${index}), ['${value}'], SLICE(doc.${fieldName}, ${index+1}))
+                 }in ${collectionName}`
+
+    console.info("remove from array aql is :",aql)
+    await db.query(aql)
+            .then( cursor => cursor.all())
+            .then( ret => console.info("update success, result is ", ret),
+                err =>  {console.error("update fail, log is ", err); retCode = "add failed"})
+}
+
+async function getPatternFor(intent){
+    return getArrayListFor(intent, "patterns")
+}
+
+async function addPatternFor(intent, value){
+    addToArrayTo(intent, "patterns", value)
+    return {retCode: "success"}
+}
+
+async function removePatternFor(intent, index){
+    removeFromArray(intent, "patterns", index)
+    return {retCode: "success"}
+}
+
+async function updatePatternFor(intent, index, value){
+    updateArrayItem(intent, "patterns", index, value)
+    return {retCode: "success"}
+}
+
 module.exports={
     getIntentsFor,
     getParasFor,
     getEntityValuesFor,
-    addSentence 
+    addSentence,
+    getPatternFor,
+    addPatternFor,
+    removePatternFor,
+    updatePatternFor,
 }
 

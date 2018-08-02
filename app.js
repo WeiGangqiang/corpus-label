@@ -44,18 +44,55 @@ app.get("/unknown-says", async function(req, res){
     res.send(ret)
 })
 
+app.get("/pattern", async function(req, res){
+    var intent = {}
+    intent.agent = req.query.agent
+    intent.intentId = req.query.intentId
+    console.log("receive req msg", intent)
+    var patterns = await dbApi.getPatternFor(intent);
+    console.log("intents is", patterns)
+    res.send(patterns);
+})
+
+app.post("/pattern", async function(req, res){
+    var intent = {}
+    intent.agent = req.body.agent
+    intent.intentId = req.body.intentId
+    console.log("receive req msg", req.body)
+    var ret = await dbApi.addPatternFor(intent, req.body.pattern)
+    res.send(ret)
+})
+
+app.delete("/pattern", async function(req, res){
+    var intent = {}
+    intent.agent = req.body.agent
+    intent.intentId = req.body.intentId
+    console.log("receive req msg", req.body)
+    var ret = await dbApi.removePatternFor(intent, req.body.patternId)
+    res.send(ret)
+})
+
+app.put("/pattern", async function(req, res){
+    var intent = {}
+    intent.agent = req.body.agent
+    intent.intentId = req.body.intentId
+    console.log("receive req msg", req.body)
+    var ret = await dbApi.updatePatternFor(intent, req.body.patternId, req.body.pattern)
+    res.send(ret)
+})
+
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
-  });
+});
   
 app.use(function(err, req, res, next) {
-res.locals.message = err.message;
-res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-res.status(err.status || 500);
-res.send('error');
+    res.status(err.status || 500);
+    res.send('error');
 });
 
 var server = app.listen(3000, function () {
