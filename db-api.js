@@ -42,42 +42,21 @@ async function getEntityValuesFor(agent, entityName){
 }
 
 async function addSentence(msg){
-    const agent = msg.agent
-    const intentId = msg.intentId
-    const sentence = msg.sentence
     const accept = msg.accept
     var retCode = "success"
     if(accept == true){
-        const collectionName = getIntentCollectionName(agent);
-        const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
-                     UPDATE doc WITH {
-                        positive:APPEND(doc.positive,'${sentence}', true)
-                     }in ${collectionName}`
-
-        console.info("aql is :",aql)
-        await db.query(aql)
-                .then( cursor => cursor.all())
-                .then( ret => console.info("result is ", ret),
-                    err =>  {console.error("error log", err); retCode = "add failed"})
+        await addToArrayTo(msg, "positive", msg.sentence)  
     }
     return {retcode: retCode}
 }
 
 
 async function getParasFor(intent){
-    var parameters = []
-    const key = intent.intentId;
-    const agent = intent.agent;
-    const collectionName = getIntentCollectionName(agent);
-    await db.query(`FOR doc in ${collectionName} FILTER doc._key== '${key}' RETURN doc.parameters`)
-            .then( cursor => cursor.all())
-            .then( paras => parameters = paras[0],
-                   err => console.error("error log", err))
-
+    var parameters = await getArrayListFor(intent, "parameters")                   
     for( i in parameters){
         var para = parameters[i]
         var entityNames = para.entity.split(".")
-        var entityAgent = (entityNames.length > 1) ? entityNames[0]: agent
+        var entityAgent = (entityNames.length > 1) ? entityNames[0]: intent.agent
         var entityName = (entityNames.length > 1) ? entityNames[1]: entityNames[0]
         var entityInfo = await getEntityValuesFor(entityAgent, entityName)
         parameters[i].values = entityInfo.values
@@ -99,7 +78,7 @@ async function getArrayListFor(intent, fieldName){
             .then( cursor => cursor.all())
             .then( paras => ret = paras[0],
                    err => console.error("get array list fail ", err))
-
+    return ret
 }
 
 async function addToArrayTo(intent, fieldName, value){
