@@ -235,7 +235,7 @@ function searchPhrase(term, intentPhrase) {
 function searchPara(term, intentParas) {
     var ret = intentParas.find((para) => {
         return para.values.map((value) => {
-            return pattern.removeLablel(value)
+            return pattern.removeLablel(value).trim()
         }).includes(term)
     })
     return ret ? ret.name : ""
