@@ -15,6 +15,10 @@ function getEntityCollectionName(agent){
     return agent.replace("-","_") + "_entity"
 }
 
+function getPhraseCollectionName(agent){
+    return agent.replace("-","_") + "_phrase"
+}
+
 function format(intents, ret){
     for (i in intents) {
         ret.push({intentId: intents[i]._key, name: intents[i].name, zhName:intents[i].zhName, modelPath: intents[i].modelPath})
@@ -150,6 +154,62 @@ async function updatePatternFor(intent, index, value){
     return {retCode: "success"}
 }
 
+async function addPhraseFor(intent, similars){
+    var collectionName = getPhraseCollectionName(intent.agent)
+    var collection = db.collection(collectionName)
+    // await collection.create().then(
+    //     () => console.log('Collection created'),
+    //     err => console.error('Failed to create collection:', err)
+    //   );
+    doc = {
+        intentId: intent.intentId,
+        similars: similars
+    }
+    var id = await collection.save(doc).then(
+        meta => { console.log('Document saved:',meta._key); return meta._key},
+        err  => { console.error('Failed to save document:', err); return ""}
+    );
+
+    return {retCode: "success", id}
+}
+
+async function getPhraseFor(intent){
+    var collectionName = getPhraseCollectionName(intent.agent)
+    var ret = []
+    await db.query(`FOR doc in ${collectionName} FILTER doc.intentId== '${intent.intentId}' RETURN doc`)
+    .then( cursor => cursor.all())
+    .then( paras => ret = paras,
+           err => console.error("get array list fail ", err))
+    return ret
+}
+
+async function updatePhraseFor(intent, id, similars){
+    var collectionName = getPhraseCollectionName(intent.agent)
+    var collection = db.collection(collectionName)
+    doc = {
+        intentId: intent.intentId,
+        similars: similars
+    }
+    var id = await collection.update(id, doc).then(
+        meta => { console.log('Document saved:',meta._key); return meta._key},
+        err  => { console.error('Failed to save document:', err); return ""}
+    );
+    return {retCode: "success", id}
+}
+
+async function deletePhraseFor(intent, id){
+    var collectionName = getPhraseCollectionName(intent.agent)
+    var collection = db.collection(collectionName)
+
+    await collection.remove(id).then(
+        () => console.log('Document removed'),
+        err => console.error('Failed to remove document', err)
+      );
+
+    return {retCode: "success"}
+}
+
+
 module.exports={
     getIntentsFor,
     getParasFor,
@@ -159,5 +219,9 @@ module.exports={
     addPatternFor,
     removePatternFor,
     updatePatternFor,
+    addPhraseFor,
+    getPhraseFor,
+    updatePhraseFor,
+    deletePhraseFor
 }
 

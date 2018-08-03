@@ -269,7 +269,7 @@
 
 ```
 {
-  "values"  : ["美丽", "漂亮"],
+  "similars"  : ["美丽", "漂亮"],
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -279,7 +279,7 @@
 * 响应
 ```
 { retcode: "success"
-  label: S2}
+  id: S2}
 
 ```
 
@@ -292,8 +292,8 @@
 
 ```
 {
-  "values"  : ["美丽", "漂亮"],
-  "label"   : S2
+  "similars"  : ["美丽", "漂亮"],
+  "id"        : S2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -315,7 +315,7 @@
 
 ```
 {
-  "label"    : S2
+  "id"    : S2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
