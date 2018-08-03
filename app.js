@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 const dbApi = require('./db-api.js')
 const logDb = require("./log-api.js")
 const postJson = require('./postjson.js');
+var config = require('./config.js');
 
 var cors = require('cors');  
 var app = express();
@@ -84,7 +85,7 @@ app.put("/pattern", async function(req, res){
 })
 
 app.post("/simplifier", async function(req, res){
-    var ret = await postJson("http://localhost:5000/api/predict", {x: req.body.sentence})
+    var ret = await postJson(config.simpliferUrl, req.body)
     console.log('simplifer result ', ret)
     res.send(ret)
 })

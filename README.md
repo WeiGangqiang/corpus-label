@@ -129,14 +129,14 @@
 
 ```
 {
-  "sentence"  : "你的世界是谁"
+  "x"  : "你的世界是谁"
 }
 ```
 
 * 响应
 ```
-{ retcode: "success",
-  sentence : "你是谁"
+{
+  "y": "你是谁"
 }
 
 ```
@@ -187,9 +187,7 @@
 
 * 响应
 ```
-{ retcode: "success"
-  patternId: 2}
-
+{ retcode: "success"}
 ```
 
 ### 6.3 更新语料规则
