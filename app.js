@@ -104,6 +104,13 @@ app.post("/simplifier", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
+app.post("/label/predict", async function(req, res){
+    var intent = getIntentFromReqBody(req)
+    var ret = await dbApi.labelPredict(intent, req.body.sentence)
+    res.send(ret)
+})
+
+//////////////////////////////////////////////////////////////////
 app.get("/phrase", async function(req, res){
     var intent = getIntentFromReqQuery(req)
     var ret = await dbApi.getPhraseFor(intent)
@@ -151,7 +158,6 @@ app.use(function(err, req, res, next) {
 var server = app.listen(config.runPort, function () {
     var host = server.address().address
     var port = server.address().port  
-    console.log("server start on: http://%s:%s", host, port)
-   
+    console.log("server start on: http://%s:%s", host, port)  
 });
 
