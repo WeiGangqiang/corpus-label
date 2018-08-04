@@ -101,7 +101,7 @@ async function addToArrayTo(intent, fieldName, value) {
     const collectionName = getIntentCollectionName(agent);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
-                    ${fieldName}:APPEND(doc.${fieldName},'${value}', true)
+                    ${fieldName}:APPEND(doc.${fieldName}, ${JSON.stringify(value)}, true)
                  }in ${collectionName}`
 
     console.info("add to array aql is :", aql)
@@ -137,7 +137,7 @@ async function updateArrayItem(intent, fieldName, index, value) {
     const collectionName = getIntentCollectionName(agent);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
-                    ${fieldName}:UNION(SLICE(doc.${fieldName},0,${index}), ['${value}'], SLICE(doc.${fieldName}, ${index + 1}))
+                    ${fieldName}:UNION(SLICE(doc.${fieldName},0,${index}), [${JSON.stringify(value)}], SLICE(doc.${fieldName}, ${index + 1}))
                  }in ${collectionName}`
 
     console.info("remove from array aql is :", aql)
