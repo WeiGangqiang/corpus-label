@@ -281,6 +281,59 @@ async function labelPredict(intent, sentence) {
     return searchLabels
 }
 
+function getEntityBy(intentParas, label){
+    return intentParas.find( para => {
+        return para.name == label.id
+    })
+}
+
+function getPhraseBy(intentPhrase, label){
+    return intentPhrase.find( phrase =>{
+        return phrase.phraseId == label.id
+    })
+}
+
+
+function generateSentences(sentence, labels, intentPhrase, intentParas){
+    if (labels.length == 0){
+        return [sentence]
+    }
+    var label = labels[labels.length - 1]
+    var ret = []
+    var genSentences = []
+    if (label.type == "entity") {
+        var entity = getEntityBy(intentParas, label)
+        if(!entity){
+            return [sentence]
+        }
+        genSentences = entity.values.map(value => {
+            return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]" + entity.label + sentence.slice(label.startPos + label.length)
+        })
+    } else {
+        var phrase = getPhraseBy(intentPhrase, label)
+        if(!phrase){
+            return [sentence]
+        }
+        genSentences = phrase.similars.map(value =>{
+            return sentence.slice(0, label.startPos) + value + sentence.slice(label.startPos + label.length)
+        })    
+    }
+    genSentences.forEach(value => {
+        var newRet = generateSentences(value, labels.slice(0, labels.length - 1), intentPhrase, intentParas)
+        ret.push(...newRet)
+    })
+    return ret
+}
+
+async function generateSentencesFor(intent, pattern){
+    var intentPhrase = await getPhraseFor(intent)
+    var intentParas = await getParasFor(intent)
+    console.log("intent phrase list", intentPhrase)
+    console.log("intent entity list", intentParas)
+
+    return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+}
+
 
 module.exports = {
     getIntentsFor,
@@ -295,6 +348,7 @@ module.exports = {
     getPhraseFor,
     updatePhraseFor,
     deletePhraseFor,
-    labelPredict
+    labelPredict,
+    generateSentencesFor
 }
 

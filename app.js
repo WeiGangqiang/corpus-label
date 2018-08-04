@@ -138,6 +138,12 @@ app.delete("/phrase", async function (req, res){
     res.send(ret)
 })
 
+app.post("/generate", async function(req, res){
+    var intent = getIntentFromReqBody(req)
+    var ret = await dbApi.generateSentencesFor(intent, req.body.pattern)
+    res.send(ret)
+})
+
 //////////////////////////////////////////////////////////////////
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
