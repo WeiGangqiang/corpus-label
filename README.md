@@ -159,13 +159,25 @@
 
 * 响应
 ```
-{ retcode: "success",
-  pattens : [
-      "今天[星期二]L0, 你[高兴]S0吗",
-      "今天[星期二]L0, 你[开心]S0吗"
-       ]
-}
-
+[
+    {
+        "sentence": "我刘亦菲你喜欢吗",
+        "labels": [
+            {
+                "type": "entity",
+                "key": "star",
+                "length": 3,
+                "startPos": 1
+            },
+            {
+                "type": "phrase",
+                "key": "14700686050982298",
+                "length": 2,
+                "startPos": 5
+            }
+        ]
+    }
+]
 ```
 
 
@@ -178,7 +190,22 @@
 
 ```
 {
-  "pattern"  : "今天[星期二]L0, 你[高兴]S0吗",
+  "pattern"  : {
+  	"sentence": "我刘亦菲你喜欢吗吗",
+  	"labels":
+  	[{
+        "type": "entity",
+        "key": "star",
+        "length": 3,
+        "startPos": 1
+    },
+    {
+        "type": "phrase",
+        "key": "14700686050982298",
+        "length": 2,
+        "startPos": 5
+    }]
+  },
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -199,7 +226,22 @@
 
 ```
 {
-  "pattern"  : "今天[星期二]L0, 你[高兴]S0吗",
+  "pattern"  : {
+  	"sentence": "我刘亦菲你喜欢吗吗",
+  	"labels":
+  	[{
+        "type": "entity",
+        "key": "star",
+        "length": 3,
+        "startPos": 1
+    },
+    {
+        "type": "phrase",
+        "key": "14700686050982298",
+        "length": 2,
+        "startPos": 5
+    }]
+  },
   "patternId": 2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
@@ -222,7 +264,7 @@
 
 ```
 {
-  "patternId": 2
+  "patternId": 0
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -252,11 +294,17 @@
 
 * 响应
 ```
-{ retcode: "success",
-  datas :[
-      {label: S0, values: ["美丽", "漂亮"]},
-      {label: S1, values: ["丑", "难看"]}]
-}
+[
+    {
+        "id": "14700686050982298",
+        "intentId": "14700686050928383",
+        "similars": [
+            "喜欢",
+            "爱上",
+            "喜爱"
+        ]
+    }
+]
 ```
 
 
@@ -278,8 +326,10 @@
 
 * 响应
 ```
-{ retcode: "success"
-  id: S2}
+{
+    "retCode": "success",
+    "id": "14700686050982298"
+}
 
 ```
 
@@ -293,7 +343,7 @@
 ```
 {
   "similars"  : ["美丽", "漂亮"],
-  "id"        : S2
+  "id"       : "14700686050982298",
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -315,7 +365,7 @@
 
 ```
 {
-  "id"    : S2
+  "id"    : "14700686050982298"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"

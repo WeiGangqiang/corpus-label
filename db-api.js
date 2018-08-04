@@ -192,7 +192,11 @@ async function getPhraseFor(intent) {
     var ret = []
     await db.query(`FOR doc in ${collectionName} FILTER doc.intentId== '${intent.intentId}' RETURN doc`)
         .then(cursor => cursor.all())
-        .then(paras => ret = paras,
+        .then(phrases => {
+            ret = phrases.map((value) => {
+                return { id: value._key, intentId: value.intentId, similars: value.similars }
+            })
+        },
             err => console.error("get array list fail ", err))
     return ret
 }
@@ -229,7 +233,7 @@ function searchPhrase(term, intentPhrase) {
     var ret = intentPhrase.find((phrase) => {
         return phrase.similars.includes(term)
     })
-    return ret ? ret._key : ""
+    return ret ? ret.id : ""
 }
 
 function searchPara(term, intentParas) {
