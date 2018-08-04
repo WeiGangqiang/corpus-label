@@ -127,14 +127,14 @@ app.post("/phrase", async function(req, res){
 //////////////////////////////////////////////////////////////////
 app.put("/phrase", async function (req, res){
     var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.updatePhraseFor(intent, req.body.id, req.body.similars)
+    var ret = await dbApi.updatePhraseFor(intent, req.body.phraseId, req.body.similars)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
 app.delete("/phrase", async function (req, res){
     var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.deletePhraseFor(intent, req.body.id)
+    var ret = await dbApi.deletePhraseFor(intent, req.body.phraseId)
     res.send(ret)
 })
 

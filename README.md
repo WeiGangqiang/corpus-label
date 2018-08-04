@@ -165,13 +165,13 @@
         "labels": [
             {
                 "type": "entity",
-                "key": "star",
+                "id": "star",
                 "length": 3,
                 "startPos": 1
             },
             {
                 "type": "phrase",
-                "key": "14700686050982298",
+                "id": "14700686050982298",
                 "length": 2,
                 "startPos": 5
             }
@@ -195,13 +195,13 @@
   	"labels":
   	[{
         "type": "entity",
-        "key": "star",
+        "id": "star",
         "length": 3,
         "startPos": 1
     },
     {
         "type": "phrase",
-        "key": "14700686050982298",
+        "id": "14700686050982298",
         "length": 2,
         "startPos": 5
     }]
@@ -231,13 +231,13 @@
   	"labels":
   	[{
         "type": "entity",
-        "key": "star",
+        "id": "star",
         "length": 3,
         "startPos": 1
     },
     {
         "type": "phrase",
-        "key": "14700686050982298",
+        "id": "14700686050982298",
         "length": 2,
         "startPos": 5
     }]
@@ -296,7 +296,7 @@
 ```
 [
     {
-        "id": "14700686050982298",
+        "phraseId": "14700686050982298",
         "intentId": "14700686050928383",
         "similars": [
             "喜欢",
@@ -343,7 +343,7 @@
 ```
 {
   "similars"  : ["美丽", "漂亮"],
-  "id"       : "14700686050982298",
+  "phraseId"       : "14700686050982298",
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -365,7 +365,7 @@
 
 ```
 {
-  "id"    : "14700686050982298"
+  "phraseId"    : "14700686050982298"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -377,8 +377,42 @@
 { retcode: "success"}
 
 ```
+## 8.0 标注预测
+* 请求方式
 
-## 8.0 添加语料
+``` post http://localhost:8000/label/predict```
+
+* 参数
+
+```
+{
+  "sentence" : "我刘亦菲你喜欢吗",
+  "intentId" : "14700686050928383",
+  "agent"    : "corpus-test"
+}
+```
+
+* 响应
+```
+[
+    {
+        "type": "entity",
+        "id": "star",
+        "length": 3,
+        "startPos": 1
+    },
+    {
+        "type": "phrase",
+        "id": "14700686050982298",
+        "length": 2,
+        "startPos": 5
+    }
+]
+
+```
+
+
+## 9.0 添加语料
 * 请求方式
 
 ``` post http://localhost:port/corpus```

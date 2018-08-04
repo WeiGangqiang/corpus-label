@@ -178,12 +178,12 @@ async function addPhraseFor(intent, similars) {
         intentId: intent.intentId,
         similars: similars
     }
-    var id = await collection.save(doc).then(
+    var phraseId = await collection.save(doc).then(
         meta => { console.log('Document saved:', meta._key); return meta._key },
         err => { console.error('Failed to save document:', err); return "" }
     );
 
-    return { retCode: "success", id }
+    return { retCode: "success", phraseId }
 }
 
 //////////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ async function getPhraseFor(intent) {
         .then(cursor => cursor.all())
         .then(phrases => {
             ret = phrases.map((value) => {
-                return { id: value._key, intentId: value.intentId, similars: value.similars }
+                return { phraseId: value._key, intentId: value.intentId, similars: value.similars }
             })
         },
             err => console.error("get array list fail ", err))
@@ -202,26 +202,26 @@ async function getPhraseFor(intent) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function updatePhraseFor(intent, id, similars) {
+async function updatePhraseFor(intent, phraseId, similars) {
     var collectionName = getPhraseCollectionName(intent.agent)
     var collection = db.collection(collectionName)
     doc = {
         intentId: intent.intentId,
         similars: similars
     }
-    var id = await collection.update(id, doc).then(
+    await collection.update(phraseId, doc).then(
         meta => { console.log('Document saved:', meta._key); return meta._key },
         err => { console.error('Failed to save document:', err); return "" }
     );
-    return { retCode: "success", id }
+    return { retCode: "success", phraseId }
 }
 
 //////////////////////////////////////////////////////////////////
-async function deletePhraseFor(intent, id) {
+async function deletePhraseFor(intent, phraseId) {
     var collectionName = getPhraseCollectionName(intent.agent)
     var collection = db.collection(collectionName)
 
-    await collection.remove(id).then(
+    await collection.remove(phraseId).then(
         () => console.log('Document removed'),
         err => console.error('Failed to remove document', err)
     );
@@ -233,7 +233,7 @@ function searchPhrase(term, intentPhrase) {
     var ret = intentPhrase.find((phrase) => {
         return phrase.similars.includes(term)
     })
-    return ret ? ret.id : ""
+    return ret ? ret.phraseId : ""
 }
 
 function searchPara(term, intentParas) {
@@ -249,14 +249,14 @@ function searchPara(term, intentParas) {
 function searchLabel(subSentence, startPos, intentPhrase, intentParas) {
     for (var shift = subSentence.length; shift > 0; shift--) {
         var term = subSentence.slice(0, shift)
-        var key = searchPhrase(term, intentPhrase)
-        if (key != "") {
-            return { type: "phrase", key, length: shift, startPos: startPos }
+        var id = searchPhrase(term, intentPhrase)
+        if (id != "") {
+            return { type: "phrase", id, length: shift, startPos: startPos }
         }
 
-        key = searchPara(term, intentParas)
-        if(key != ""){
-            return { type: "entity", key, length: shift, startPos: startPos }
+        id = searchPara(term, intentParas)
+        if(id != ""){
+            return { type: "entity", id, length: shift, startPos: startPos }
         }
     }
     return null
