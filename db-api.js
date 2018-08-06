@@ -131,6 +131,40 @@ async function removeFromArray(intent, fieldName, index) {
 }
 
 //////////////////////////////////////////////////////////////////
+async function dropArrayAllItems(intent, fieldName){
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}:[]
+                 }in ${collectionName}`
+    await db.query(aql)
+        .then(cursor => cursor.all())
+        .then(ret => console.info("drop arrays success, result is ", ret),
+            err => { console.error("drop arrays fail, log is ", err); retCode = "add failed" })
+
+}
+
+//////////////////////////////////////////////////////////////////
+async function appendItemsToArray(intent, fieldName, values){
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}:APPEND(doc.${fieldName}, ${JSON.stringify(values)})
+                 }in ${collectionName}`
+
+    console.info("append items to array aql is :", aql)
+    await db.query(aql)
+        .then(cursor => cursor.all())
+        .then(ret => console.info("append items success, result is ", ret),
+            err => { console.error("append items fail, log is ", err); retCode = "add failed" })
+
+}
+
+//////////////////////////////////////////////////////////////////
 async function updateArrayItem(intent, fieldName, index, value) {
     const agent = intent.agent
     const intentId = intent.intentId
@@ -140,7 +174,7 @@ async function updateArrayItem(intent, fieldName, index, value) {
                     ${fieldName}:UNION(SLICE(doc.${fieldName},0,${index}), [${JSON.stringify(value)}], SLICE(doc.${fieldName}, ${index + 1}))
                  }in ${collectionName}`
 
-    console.info("remove from array aql is :", aql)
+    console.info("update array item aql is :", aql)
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("update success, result is ", ret),
@@ -148,25 +182,30 @@ async function updateArrayItem(intent, fieldName, index, value) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function getPatternFor(intent) {
-    return getArrayListFor(intent, "patterns")
+function getPatternField(type){
+    return (type == "positive") ? "posPatterns" : "negPatterns"
 }
 
 //////////////////////////////////////////////////////////////////
-async function addPatternFor(intent, value) {
-    addToArrayTo(intent, "patterns", value)
+async function getPatternFor(intent, type) {
+    return getArrayListFor(intent, getPatternField(type))
+}
+
+//////////////////////////////////////////////////////////////////
+async function addPatternFor(intent, value, type) {
+    addToArrayTo(intent, getPatternField(type), value)
     return { retCode: "success" }
 }
 
 //////////////////////////////////////////////////////////////////
-async function removePatternFor(intent, index) {
-    removeFromArray(intent, "patterns", index)
+async function removePatternFor(intent, index, type) {
+    removeFromArray(intent, getPatternField(type), index)
     return { retCode: "success" }
 }
 
 //////////////////////////////////////////////////////////////////
-async function updatePatternFor(intent, index, value) {
-    updateArrayItem(intent, "patterns", index, value)
+async function updatePatternFor(intent, index, value, type) {
+    updateArrayItem(intent, getPatternField(type), index, value)
     return { retCode: "success" }
 }
 
@@ -342,6 +381,28 @@ async function generateSentencesFor(intent, pattern) {
     return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
 }
 
+async function generateDone(intent){
+    var positive = await getPatternFor(intent, "positive")
+    var negative = await getPatternFor(intent, "negative")
+    var intentPhrase = await getPhraseFor(intent)
+    var intentParas = await getParasFor(intent)
+
+    await dropArrayAllItems(intent, "posGenSentence")
+    await dropArrayAllItems(intent, "negGenSentence")
+
+    positive.forEach(pattern =>{
+        var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+        awaitappendItemsToArray(intent, "posGenSentence", sentences)
+    })
+
+    negative.forEach(pattern => {
+        var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+        appendItemsToArray(intent, "negGenSentence", sentences)
+    })
+
+    return { retCode: "success" }
+}
+
 
 module.exports = {
     getIntentsFor,
@@ -357,6 +418,7 @@ module.exports = {
     updatePhraseFor,
     deletePhraseFor,
     labelPredict,
-    generateSentencesFor
+    generateSentencesFor,
+    generateDone
 }
 

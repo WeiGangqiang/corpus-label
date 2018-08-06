@@ -70,7 +70,7 @@ function getIntentFromReqQuery(req){
 //////////////////////////////////////////////////////////////////
 app.get("/pattern", async function(req, res){
     var intent = getIntentFromReqQuery(req)
-    var patterns = await dbApi.getPatternFor(intent);
+    var patterns = await dbApi.getPatternFor(intent, req.query.type);
     console.log("intents is", patterns)
     res.send(patterns);
 })
@@ -78,21 +78,21 @@ app.get("/pattern", async function(req, res){
 //////////////////////////////////////////////////////////////////
 app.post("/pattern", async function(req, res){
     var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.addPatternFor(intent, req.body.pattern)
+    var ret = await dbApi.addPatternFor(intent, req.body.pattern, req.body.type)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
 app.delete("/pattern", async function(req, res){
     var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.removePatternFor(intent, req.body.patternId)
+    var ret = await dbApi.removePatternFor(intent, req.body.patternId, req.body.type)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
 app.put("/pattern", async function(req, res){
     var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.updatePatternFor(intent, req.body.patternId, req.body.pattern)
+    var ret = await dbApi.updatePatternFor(intent, req.body.patternId, req.body.pattern, req.body.type)
     res.send(ret)
 })
 
@@ -141,6 +141,12 @@ app.delete("/phrase", async function (req, res){
 app.post("/generate", async function(req, res){
     var intent = getIntentFromReqBody(req)
     var ret = await dbApi.generateSentencesFor(intent, req.body.pattern)
+    res.send(ret)
+})
+
+app.post("/label-done", async function(req, res){
+    var intent = getIntentFromReqBody(req)
+    var ret = await dbApi.generateDone(intent)
     res.send(ret)
 })
 
