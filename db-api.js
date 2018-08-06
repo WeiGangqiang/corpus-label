@@ -341,7 +341,7 @@ function generateForEntity(sentence, label, intentParas) {
         return [sentence]
     }
     return entity.values.map(value => {
-        return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]" + entity.label + sentence.slice(label.startPos + label.length)
+        return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]" + entity.label + " "+ sentence.slice(label.startPos + label.length)
     })
 }
 
@@ -392,11 +392,13 @@ async function generateDone(intent){
 
     positive.forEach(pattern =>{
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
-        awaitappendItemsToArray(intent, "posGenSentence", sentences)
+        console.log("sentences is", sentences)
+        appendItemsToArray(intent, "posGenSentence", sentences)
     })
 
     negative.forEach(pattern => {
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+        console.log("sentences is", sentences)
         appendItemsToArray(intent, "negGenSentence", sentences)
     })
 
