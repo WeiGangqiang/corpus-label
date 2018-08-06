@@ -155,6 +155,7 @@
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
+| type | `String` | positive(正样本), negative(负样本) |
 
 
 * 响应
@@ -206,6 +207,7 @@
         "startPos": 5
     }]
   },
+  "type"     : "positive", #"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
@@ -242,6 +244,7 @@
         "startPos": 5
     }]
   },
+  "type"     : "positive", #"positive/negative"
   "patternId": 2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
@@ -265,6 +268,7 @@
 ```
 {
   "patternId": 0
+  "type"     : "positive",#"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
   "agent"    : "course-record"
