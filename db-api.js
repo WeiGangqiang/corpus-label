@@ -341,7 +341,7 @@ function generateForEntity(sentence, label, intentParas) {
         return [sentence]
     }
     return entity.values.map(value => {
-        return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]" + entity.label + " "+ sentence.slice(label.startPos + label.length)
+        return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]/" + entity.label + " "+ sentence.slice(label.startPos + label.length)
     })
 }
 
