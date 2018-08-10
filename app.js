@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.get("/agents", async function(req, res){
     const host = req.query.host;
     console.log("receive query agents para:", host)
-    res.send(["course-record","question-answer"])
+    res.send(["corpus-test", "course-record", "question-answer"])
 })
 
 //////////////////////////////////////////////////////////////////
