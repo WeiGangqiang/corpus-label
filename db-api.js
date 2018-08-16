@@ -112,6 +112,25 @@ async function addToArrayTo(intent, fieldName, value) {
 
 }
 
+
+//////////////////////////////////////////////////////////////////
+async function updateToArrayTo(intent, fieldName, values) {
+    const agent = intent.agent
+    const intentId = intent.intentId
+    const collectionName = getIntentCollectionName(agent);
+    const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
+                 UPDATE doc WITH {
+                    ${fieldName}: ${JSON.stringify(values)}
+                 }in ${collectionName}`
+
+    console.info("update to array aql is :", aql)
+    await db.query(aql)
+        .then(cursor => cursor.all())
+        .then(ret => console.info("add success, result is ", ret),
+            err => { console.error("add fail, log is ", err); retCode = "add failed" })
+
+}
+
 //////////////////////////////////////////////////////////////////
 async function removeFromArray(intent, fieldName, index) {
     const agent = intent.agent
@@ -405,6 +424,34 @@ async function generateDone(intent){
     return { retCode: "success" }
 }
 
+function isMatchPhrase(sentence, label, phraseId, phrase){
+    if(phrase == ''){
+        return label.id == phraseId
+    } else {
+        return label.id == phraseId && (sentence.slice(label.startPos, label.startPos + label.length) == phrase)
+    }
+}
+
+function doUpdatePatterns(patterns, phraseId, phrase){
+    return patterns.map(pattern =>{
+        var newlabels = pattern.labels.filter((label)=>{
+            return !isMatchPhrase(pattern.sentence, label, phraseId, phrase)
+        })
+        pattern.labels = newlabels
+        return pattern
+    })    
+}
+
+async function updatePatterns(intent, pharseId, phrase){
+    var positives = await getPatternFor(intent, "positive")
+    var negatives = await getPatternFor(intent, "negative")
+    positives = doUpdatePatterns(positives, pharseId, phrase)
+    negatives = doUpdatePatterns(negatives, pharseId, phrase)
+    updateToArrayTo(intent, getPatternField("positive"), positives)
+    updateToArrayTo(intent, getPatternField("negative"), negatives)
+    return { retCode: "success"}
+}
+
 
 module.exports = {
     getIntentsFor,
@@ -421,6 +468,7 @@ module.exports = {
     deletePhraseFor,
     labelPredict,
     generateSentencesFor,
-    generateDone
+    generateDone,
+    updatePatterns
 }
 

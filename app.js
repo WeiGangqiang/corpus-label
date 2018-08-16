@@ -150,6 +150,12 @@ app.post("/label-done", async function(req, res){
     res.send(ret)
 })
 
+app.post("/pattern/sync", async function(req, res){
+    var intent = getIntentFromReqBody(req)
+    var ret = await dbApi.updatePatterns(intent, req.body.phraseId, req.body.phrase)
+    res.send(ret)
+})
+
 //////////////////////////////////////////////////////////////////
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
