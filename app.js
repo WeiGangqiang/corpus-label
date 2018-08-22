@@ -5,6 +5,10 @@ const dbApi = require('./db-api.js')
 const logDb = require("./log-api.js")
 const postJson = require('./postjson.js');
 var config = require('./config.js');
+var slot = require('./subApp/slot.js')
+var phrase = require('./subApp/phrase.js')
+var pattern = require('./subApp/pattern.js')
+var utils = require('./subApp/utils.js')
 
 var cors = require('cors');  
 var app = express();
@@ -28,12 +32,9 @@ app.get("/intents",async function(req, res){
 });
 
 //////////////////////////////////////////////////////////////////
-app.get("/parameters", async function(req, res){
-    var intent = getIntentFromReqQuery(req)
-    var paras = await dbApi.getParasFor(intent)
-    console.log("response is:", paras)
-    res.send(paras)
-})
+app.use("/parameters", slot.app)
+app.use("/pattern", pattern.app)
+app.use("/phrase", phrase.app)
 
 //////////////////////////////////////////////////////////////////
 app.post("/corpus", async function(req, res){
@@ -50,53 +51,6 @@ app.get("/unknown-says", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
-function getIntentFromReqBody(req){
-    var intent = {}
-    intent.agent = req.body.agent
-    intent.intentId = req.body.intentId
-    console.log("receive req msg", req.body)
-    return intent
-}
-
-//////////////////////////////////////////////////////////////////
-function getIntentFromReqQuery(req){
-    var intent = {}
-    intent.agent = req.query.agent
-    intent.intentId = req.query.intentId
-    console.log("receive req msg", req.query)
-    return intent
-}
-
-//////////////////////////////////////////////////////////////////
-app.get("/pattern", async function(req, res){
-    var intent = getIntentFromReqQuery(req)
-    var patterns = await dbApi.getPatternFor(intent, req.query.type);
-    console.log("intents is", patterns)
-    res.send(patterns);
-})
-
-//////////////////////////////////////////////////////////////////
-app.post("/pattern", async function(req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.addPatternFor(intent, req.body.pattern, req.body.type)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.delete("/pattern", async function(req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.removePatternFor(intent, req.body.patternId, req.body.type)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.put("/pattern", async function(req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.updatePatternFor(intent, req.body.patternId, req.body.pattern, req.body.type)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
 app.post("/simplifier", async function(req, res){
     var ret = await postJson(config.simpliferUrl, req.body)
     console.log('simplifer result ', ret)
@@ -105,53 +59,28 @@ app.post("/simplifier", async function(req, res){
 
 //////////////////////////////////////////////////////////////////
 app.post("/label/predict", async function(req, res){
-    var intent = getIntentFromReqBody(req)
+    var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.labelPredict(intent, req.body.sentence)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.get("/phrase", async function(req, res){
-    var intent = getIntentFromReqQuery(req)
-    var ret = await dbApi.getPhraseFor(intent)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.post("/phrase", async function(req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.addPhraseFor(intent, req.body.similars)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.put("/phrase", async function (req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.updatePhraseFor(intent, req.body.phraseId, req.body.similars)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.delete("/phrase", async function (req, res){
-    var intent = getIntentFromReqBody(req)
-    var ret = await dbApi.deletePhraseFor(intent, req.body.phraseId)
-    res.send(ret)
-})
-
 app.post("/generate", async function(req, res){
-    var intent = getIntentFromReqBody(req)
+    var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.generateSentencesFor(intent, req.body.pattern)
     res.send(ret)
 })
 
+//////////////////////////////////////////////////////////////////
 app.post("/label-done", async function(req, res){
-    var intent = getIntentFromReqBody(req)
+    var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.generateDone(intent)
     res.send(ret)
 })
 
+//////////////////////////////////////////////////////////////////
 app.post("/pattern/sync", async function(req, res){
-    var intent = getIntentFromReqBody(req)
+    var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.updatePatterns(intent, req.body.phraseId, req.body.phrase)
     res.send(ret)
 })
