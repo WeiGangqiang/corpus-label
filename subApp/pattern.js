@@ -1,6 +1,6 @@
 var express = require("express");
 var utils = require('./utils.js')
-const dbApi = require('../db-api.js')
+const dbApi = require('../db/db-api.js')
 var app = express();
 
 //////////////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 var arango =  require('arangojs');
-var config = require('./config.js')
+var config = require('../config.js')
+
 Database = arango.Database;
 
 var db2 = new Database(`http://${config.host2}:${config.port}`);
