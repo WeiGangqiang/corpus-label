@@ -1,5 +1,4 @@
 var express = require("express");
-var utils = require('./utils.js')
 const dbApi = require('../db/entity-db.js')
 var app = express();
 
@@ -22,7 +21,7 @@ app.post("/", async function(req, res){
 
 //////////////////////////////////////////////////////////////////
 app.delete("/", async function(req, res){
-    var ret = await dbApi.deleteEntity(req.body.agent, req.body.entityId)
+    var ret = await dbApi.deleteEntity(req.query.agent, req.query.entityId)
     res.send(ret)
 })
 

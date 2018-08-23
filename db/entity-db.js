@@ -22,7 +22,7 @@ async function getEntity(agent, entityName) {
         .then(cursor => cursor.all())
         .then(entities => ret = entities[0],
             err => console.error("error log", err))
-            
+
     var entity = {
         name : ret.name,
         items: ret.items,
@@ -86,7 +86,7 @@ async function updateEntity(agent, entity){
         meta => { console.log('entity updated:', meta._key); return meta._key },
         err => { console.error('faild update entity:', err); return "" }
     );
-    return { retCode: "success", entityId }
+    return { retCode: "success" }
 }
 
 

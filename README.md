@@ -414,7 +414,245 @@
 ]
 
 ```
-## 9.0 生成语料
+## 9.0 agent 
+### 9.1 查询agentList
+* 请求方式
+
+``` get http://localhost:port/agent/all```
+
+* 参数
+
+无
+
+* 响应
+```
+[
+    {
+        "agentId": "14700686055670147",
+        "name": "question-unswer"
+    },
+    {
+        "agentId": "14700686055669972",
+        "name": "corpus-test"
+    },
+    {
+        "agentId": "14700686055670096",
+        "name": "survey-creator"
+    },
+    {
+        "agentId": "14700686055670290",
+        "name": "course-record"
+    }
+]
+```
+
+###9.2 查询指定agent
+
+* 请求方式
+
+``` get http://localhost:port/agent```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agentId | `String` | agentId |
+
+* 响应
+```
+{
+    "agentId": "14700686055670147",
+    "name": "question-unswer",
+    "gateWay": "http://localhost:7070/api",
+    "unknownReplies": [
+        "抱歉，不太明白您的说法，请您换种说法再试试",
+        "你换一个说法吧"
+    ],
+    "shareAgents": []
+}
+```
+
+###9.3 添加指定agent
+* 请求方式
+
+``` post http://localhost:port/agent```
+
+* 参数
+
+```
+{
+	"name":"course-record",
+	"gateWay":"http://localhost:7070/api",
+	"introduced": "我可以帮你记住您的课表哦，每天早上记得问我哦",
+	"shareAgents": [],
+	"unknownReplies": ["抱歉，不太明白您的说法，请您换种说法再试试","抱歉，如果您在录课，可以尝试说课程的全名，例如 语文课和数学课"]
+}
+```
+
+
+* 响应
+```
+{ retcode: "success" , agentId: "14700686055670147"}
+```
+
+
+###9.4 更新指定agent
+
+* 请求方式
+
+``` put http://localhost:port/agent```
+
+* 参数
+
+```
+{
+    "agentId": "14700686055670147",
+	"name":"course-record",
+	"gateWay":"http://localhost:7070/api",
+	"introduced": "我可以帮你记住您的课表哦，每天早上记得问我哦",
+	"shareAgents": [],
+	"unknownReplies": ["抱歉，不太明白您的说法，请您换种说法再试试","抱歉，如果您在录课，可以尝试说课程的全名，例如 语文课和数学课"]
+}
+```
+
+* 响应
+```
+{ retcode: "success" , agentId: "14700686055670147"}
+
+```
+
+###9.5 删除指定的agent
+* 请求方式
+
+``` delete http://localhost:port/agent```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agentId | `String` | agentId |
+
+* 响应
+```
+{ retcode: "success" }
+```
+
+
+##10.0 实体
+### 10.1 查询实体列表
+* 请求方式
+
+``` get http://localhost:port/entity/names```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+
+* 响应
+```
+[
+    "month",
+    "star",
+    "currency",
+    "size"
+]
+
+```
+
+###10.2 查询指定实体
+
+* 请求方式
+
+``` get http://localhost:port/entity```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+| entityName | `String` | 实体的名字 |
+
+
+* 响应
+```
+{
+    "name": "size",
+    "items": [
+        "4尺, 四尺",
+        "5尺, 五️尺"
+    ],
+    "entityId": "14700686055646434"
+}
+```
+
+###10.3 添加指定实体
+* 请求方式
+
+``` post http://localhost:port/entity```
+
+* 参数
+
+```
+{
+	"agent":"corpus-test",
+	"entity": {
+		"name": "size",
+		"items": ["4尺, 四尺", "5尺, 五️尺"]
+	}
+}
+```
+
+* 响应
+```
+{ retcode: "success" , entityId: "14700686055670147"}
+```
+
+
+###10.4 更新指定实体
+
+* 请求方式
+
+``` put http://localhost:port/entity```
+
+* 参数
+
+```
+{
+	"agent":"corpus-test",
+	"entity": {
+		"name": "clever",
+		"entityId":"14700686055675270",
+		"items": ["傻逼, 操蛋", "聪明, 伶俐"]
+	}
+}
+```
+
+* 响应
+```
+{ retcode: "success" }
+
+```
+
+###10.5 删除指定的实体
+* 请求方式
+
+``` delete http://localhost:port/entity```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent的名字 |
+| entityId | `String` | 实体的ID |
+
+* 响应
+```
+{ retcode: "success" }
+```
+
+## 11.0 生成语料
 * 请求方式
 
 ``` post http://localhost:port/generate```
@@ -460,7 +698,7 @@
 
 ```
 
-## 10.0 添加语料
+## 12.0 添加语料
 * 请求方式
 
 ``` post http://localhost:port/corpus```
