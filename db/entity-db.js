@@ -26,7 +26,9 @@ async function getEntity(agent, entityName) {
     var entity = {
         name : ret.name,
         items: ret.items,
-        entityId   : ret._key
+        entityId   : ret._key,
+        zhName     : ret.zhName,
+        createTime : ret.createTime,
     }             
     return entity
 }
@@ -34,6 +36,8 @@ async function getEntity(agent, entityName) {
 function buildDocBy(entity){
     var doc = {
         name: entity.name,
+        zhName: entity.zhName,
+        createTime: entity.createTime,
         items: entity.items,
         kind: 'enums',
         subEntities: [entity.name+ ":L0"]
