@@ -22,7 +22,7 @@ app.post("/", async function(req, res){
 
 //////////////////////////////////////////////////////////////////
 app.delete("/", async function(req, res){
-    var ret = await dbApi.deleteEntity(req.body.agent, req.body.entityName)
+    var ret = await dbApi.deleteEntity(req.body.agent, req.body.entityId)
     res.send(ret)
 })
 

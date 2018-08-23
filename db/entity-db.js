@@ -16,13 +16,19 @@ async function getEntityNames(agent){
 
 //////////////////////////////////////////////////////////////////
 async function getEntity(agent, entityName) {
-    var ret = []
+    var ret = {}
     const collectionName = dbUtils.getEntityCollectionName(agent);
     await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
         .then(entities => ret = entities[0],
             err => console.error("error log", err))
-    return ret
+            
+    var entity = {
+        name : ret.name,
+        items: ret.items,
+        entityId   : ret._key
+    }             
+    return entity
 }
 
 function buildDocBy(entity){
@@ -53,10 +59,9 @@ async function addEntity(agent, entity) {
     return { retCode: "success", entityId }
 }
 
-async function deleteEntity(agent, entityName) {
+async function deleteEntity(agent, entityId) {
     const collectionName = dbUtils.getEntityCollectionName(agent);
     var collection = db.collection(collectionName)
-    var entityId = getEntityId(collectionName, entityName)
     await collection.remove(entityId).then(
         () => console.log('entity doc removed'),
         err => console.error('Failed to remove entity document', err)
@@ -76,9 +81,8 @@ async function getEntityId(collectionName, entityName){
 async function updateEntity(agent, entity){
     const collectionName = dbUtils.getEntityCollectionName(agent);
     var collection = db.collection(collectionName)
-    var entityId = getEntityId(collectionName, entity.name)
     var doc = buildDocBy(entity)
-    await collection.update(entityId, doc).then(
+    await collection.update(entity.entityId, doc).then(
         meta => { console.log('entity updated:', meta._key); return meta._key },
         err => { console.error('faild update entity:', err); return "" }
     );
