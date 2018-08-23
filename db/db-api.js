@@ -317,7 +317,6 @@ async function updatePatterns(intent, pharseId, phrase){
 module.exports = {
     getIntentsFor,
     getParasFor,
-    getEntityValuesFor,
     addSentence,
     getPatternFor,
     addPatternFor,

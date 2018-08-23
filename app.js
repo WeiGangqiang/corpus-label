@@ -8,6 +8,7 @@ var config = require('./config.js');
 var slot = require('./subApp/slot.js')
 var phrase = require('./subApp/phrase.js')
 var pattern = require('./subApp/pattern.js')
+var entity = require('./subApp/entity.js')
 var utils = require('./subApp/utils.js')
 
 var cors = require('cors');  
@@ -35,6 +36,7 @@ app.get("/intents",async function(req, res){
 app.use("/parameters", slot.app)
 app.use("/pattern", pattern.app)
 app.use("/phrase", phrase.app)
+app.use("/entity", entity.app)
 
 //////////////////////////////////////////////////////////////////
 app.post("/corpus", async function(req, res){
