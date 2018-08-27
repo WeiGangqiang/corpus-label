@@ -7,9 +7,9 @@ async function getAgentsAll() {
     var collection = db.collection(agentCollectionName)
     var rets = []
     await collection.all().then(
-        cursor => cursor.map(doc => { return {agentId: doc._key, name: doc.name, zhName: doc.zhName}})
+        cursor => cursor.map(doc => { return formatAgent(doc)})
     ).then(
-        keys => rets = keys,
+        agents => rets = agents,
         err => console.error('Failed to fetch all documents:', err)
     );
     return rets
