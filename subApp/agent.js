@@ -1,7 +1,7 @@
 var express = require("express");
 const dbApi = require('../db/agent-db.js')
+var generator = require('../dgConfig/generator.js')
 var app = express();
-
 
 app.get("/", async function(req, res){
     var agent = await dbApi.getAgent(req.query.agentId);
@@ -11,6 +11,11 @@ app.get("/", async function(req, res){
 app.get("/all", async function(req, res){
     var agents = await dbApi.getAgentsAll()
     res.send(agents)
+})
+
+app.post("/create", async function(req, res){
+    var ret = await generator.buildConfigs('corpus-test')
+    res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////

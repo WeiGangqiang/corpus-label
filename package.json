@@ -19,8 +19,10 @@
   "homepage": "https://github.com/WeiGangqiang/corpus-label#readme",
   "dependencies": {
     "arangojs": "^5.8.0",
+    "archiver": "^3.0.0",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "js-yaml": "^3.12.0",
     "request": "^2.87.0"
   }
 }
