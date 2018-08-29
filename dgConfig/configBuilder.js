@@ -50,6 +50,10 @@ async function buildConfigForEntities(configPath, agentName){
     console.log('build entity configs done')
 }
 
+async function buildConfigForIntent(configPath, agentName){
+    
+}
+
 async function buildConfigs(agent) {
     var configPath = tempPath + uuid.v1()
     await createAgentConfigPaths(configPath)

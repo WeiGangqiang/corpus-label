@@ -3,14 +3,16 @@ var request = require('request');
 var bodyParser = require('body-parser');
 const dbApi = require('./db/db-api.js')
 const logDb = require("./db/log-api.js")
+const intentDb = require("./db/intent-db.js")
 const postJson = require('./postjson.js');
 var config = require('./config.js');
 var slot = require('./subApp/slot.js')
 var phrase = require('./subApp/phrase.js')
 var pattern = require('./subApp/pattern.js')
-var entity = require('./subApp/entity.js')
-var agent = require('./subApp/agent.js')
 var utils = require('./subApp/utils.js')
+var intentApp = require('./subApp/intent.js')
+var entityApp = require('./subApp/entity.js')
+var agentApp = require('./subApp/agent.js')
 
 var cors = require('cors');  
 var app = express();
@@ -28,7 +30,7 @@ app.get("/agents", async function(req, res){
 app.get("/intents",async function(req, res){
     const agent= req.query.agent;
     console.log("receive req msg", agent);
-    var intents = await dbApi.getIntentsFor(agent);
+    var intents = await intentDb.getIntentsFor(agent);
     console.log("intents is", intents)
     res.send(intents);
 });
@@ -37,8 +39,9 @@ app.get("/intents",async function(req, res){
 app.use("/parameters", slot.app)
 app.use("/pattern", pattern.app)
 app.use("/phrase", phrase.app)
-app.use("/entity", entity.app)
-app.use("/agent", agent.app)
+app.use("/intent", intentApp.app)
+app.use("/entity", entityApp.app)
+app.use("/agent", agentApp.app)
 
 //////////////////////////////////////////////////////////////////
 app.post("/corpus", async function(req, res){
