@@ -14,7 +14,7 @@ app.get("/all", async function(req, res){
 })
 
 app.post("/create", async function(req, res){
-    var ret = await generator.buildConfigs('corpus-test')
+    var ret = await generator.buildConfigs('course-record')
     res.send(ret)
 })
 

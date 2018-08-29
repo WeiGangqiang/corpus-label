@@ -15,16 +15,25 @@ async function getAgentsAll() {
     return rets
 }
 
+function addOptionField(agent, doc, fieldName){
+    if(fieldName in doc ){
+        agent[fieldName] = doc[fieldName]
+    }
+}
+
+
 function formatAgent(doc){
     var agent = {
         agentId: doc._key,
         name: doc.name,
-        zhName: doc.zhName,
-        createTime: doc.createTime,
         gateWay: doc.gateWay,
-        unknownReplies: doc.unknownReplies,
-        shareAgents: doc.shareAgents
+        introduced: doc.introduced
     }
+
+    addOptionField(agent, doc, "zhName")
+    addOptionField(agent, doc, "createTime")
+    addOptionField(agent, doc, "unknownReplies")
+    addOptionField(agent, doc, "shareAgents")
     return agent
 }
 
@@ -36,6 +45,18 @@ async function getAgent(agentId) {
         doc => ret = doc,
         err => console.error('Failed to fetch agent document:', err.message));
     return formatAgent(ret)
+}
+
+async function getAgentByName(agentName) {
+    var ret= {}
+    await db.query(`FOR doc IN ${agentCollectionName} filter doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
+    .then(agents => {
+        console.log(agents)
+        if(agents){
+            ret = formatAgent(agents[0])
+        }},
+        err => console.error("error log", err))
+    return ret
 }
 
 async function updateAgent(agent) {
@@ -72,5 +93,6 @@ module.exports = {
     getAgent,
     updateAgent,
     addAgent,
-    deleteAgent
+    deleteAgent,
+    getAgentByName
 }
