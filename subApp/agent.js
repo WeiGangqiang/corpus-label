@@ -1,6 +1,6 @@
 var express = require("express");
+var builder = require('../dgConfig/configBuilder.js')
 const dbApi = require('../db/agent-db.js')
-var generator = require('../dgConfig/generator.js')
 var app = express();
 
 app.get("/", async function(req, res){
@@ -14,7 +14,7 @@ app.get("/all", async function(req, res){
 })
 
 app.post("/create", async function(req, res){
-    var ret = await generator.buildConfigs('course-record')
+    var ret = await builder.buildConfigs('course-record')
     res.send(ret)
 })
 
