@@ -21,7 +21,6 @@ function addOptionField(agent, doc, fieldName){
     }
 }
 
-
 function formatAgent(doc){
     var agent = {
         agentId: doc._key,
@@ -51,7 +50,6 @@ async function getAgentByName(agentName) {
     var ret= {}
     await db.query(`FOR doc IN ${agentCollectionName} filter doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
     .then(agents => {
-        console.log(agents)
         if(agents){
             ret = formatAgent(agents[0])
         }},

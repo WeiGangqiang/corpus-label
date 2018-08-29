@@ -14,7 +14,7 @@ app.get("/all", async function(req, res){
 })
 
 app.post("/create", async function(req, res){
-    var ret = await builder.buildConfigs('course-record')
+    var ret = await builder.buildConfigs('corpus-test')
     res.send(ret)
 })
 

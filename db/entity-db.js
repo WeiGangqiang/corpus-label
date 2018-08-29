@@ -14,6 +14,18 @@ async function getEntityNames(agent){
     return ret
 }
 
+
+async function getEntitiesAll(agent) {
+    var ret = []
+    const collectionName = dbUtils.getEntityCollectionName(agent);
+    await db.query(`FOR doc in ${collectionName} FILTER doc.items != NULL  RETURN doc`)
+        .then(cursor => cursor.all())
+        .then(entities => ret = entities,
+            err => console.error("error log", err))
+   
+    return ret;
+}
+
 //////////////////////////////////////////////////////////////////
 async function getEntity(agent, entityName) {
     var ret = {}
@@ -99,5 +111,6 @@ module.exports = {
     getEntity,
     addEntity,
     deleteEntity,
-    updateEntity
+    updateEntity,
+    getEntitiesAll
 }
