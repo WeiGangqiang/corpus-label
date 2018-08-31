@@ -2,18 +2,22 @@ var fileUtils = require('./fileUtils.js')
 var zipUtils = require('./zipUtils.js')
 const agentDb = require('../db/agent-db.js')
 const entityDb = require('../db/entity-db.js')
+const intentDb = require('../db/intent-db.js')
 const uuid = require('node-uuid');
 var async = require('async');
 const tempPath = "temp/"
 
+//////////////////////////////////////////////////////////////////
 function intentPath(configPath){
     return configPath +  "/intent"
 }
 
+//////////////////////////////////////////////////////////////////
 function entityPath(configPath){
     return configPath + "/entities"
 }
 
+//////////////////////////////////////////////////////////////////
 async function createAgentConfigPaths(configPath){
     try {
         await fileUtils.mkdirP(configPath)
@@ -25,12 +29,14 @@ async function createAgentConfigPaths(configPath){
     }
 }
 
+//////////////////////////////////////////////////////////////////
 async function buildAgentConfig(configPath, agentName){
     var agent = await agentDb.getAgentByName(agentName)
     console.log('agent is', agent)
     await fileUtils.writeYaml(configPath + "/" + agentName + ".yaml", agent)
 }
 
+//////////////////////////////////////////////////////////////////
 async function doBuildEntityConfig(configPath, entity){
     var entityYaml = {}
     entityYaml.enum = entity.name
@@ -38,27 +44,42 @@ async function doBuildEntityConfig(configPath, entity){
     await fileUtils.writeYaml(entityPath(configPath) + "/" + entity.name + ".yaml", entityYaml)
 }
 
-
+//////////////////////////////////////////////////////////////////
 async function buildConfigForEntities(configPath, agentName){
     var entities = await entityDb.getEntitiesAll(agentName)
     console.log('entities is', entities)
     async.each(entities, function(entity,callBack){
         doBuildEntityConfig(configPath, entity)
     }, function(error){
-        console.log('error for build entity config', error)
+        console.error('error for build entity config', error)
     })
     console.log('build entity configs done')
 }
 
-async function buildConfigForIntent(configPath, agentName){
-    
+//////////////////////////////////////////////////////////////////
+async function doBuildIntentConfig(configPath, intent){
+
 }
 
+//////////////////////////////////////////////////////////////////
+async function buildConfigForIntent(configPath, agentName){
+    var intents = await intentDb.getIntentsForServer(agentName)
+    console.log("intents is", intents)
+    async.each(intents, function(intent, callBack){
+        doBuildIntentConfig(configPath, intent)
+    }, function(error){
+        console.error('error for build intent', error)
+    }) 
+    console.log('build intent configs done')   
+}
+
+//////////////////////////////////////////////////////////////////
 async function buildConfigs(agent) {
     var configPath = tempPath + uuid.v1()
     await createAgentConfigPaths(configPath)
     await buildAgentConfig(configPath, agent)
     await buildConfigForEntities(configPath,agent)
+    await buildConfigForIntent(configPath, agent)
 
 
     var intent = {}

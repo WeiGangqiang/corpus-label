@@ -1,6 +1,7 @@
 var fs = require('fs');
 const yaml = require('js-yaml');
 
+//////////////////////////////////////////////////////////////////
 function writeYaml(filePath, content){
     return new Promise((resolve,reject) => {
         let obj = yaml.safeDump(content)
@@ -16,6 +17,7 @@ function writeYaml(filePath, content){
     })
 }
 
+//////////////////////////////////////////////////////////////////
 function mkdirP(filePath) {
     return new Promise((resolve, reject)=> {
         fs.exists(filePath, function(exists){

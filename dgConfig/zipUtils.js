@@ -1,6 +1,7 @@
 var fs = require('fs');
 var archiver = require('archiver');
 
+//////////////////////////////////////////////////////////////////
 function zipPath(zipPath, zipFilePath){
     return new Promise( (resolve,reject) => {
         var output = fs.createWriteStream(zipFilePath);

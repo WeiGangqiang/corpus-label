@@ -3,6 +3,7 @@ var dbUtils = require('./dbUtils.js')
 var db = arongodb.getDb();
 const agentCollectionName = "agentTable"
 
+//////////////////////////////////////////////////////////////////
 async function getAgentsAll() {
     var collection = db.collection(agentCollectionName)
     var rets = []
@@ -15,12 +16,14 @@ async function getAgentsAll() {
     return rets
 }
 
+//////////////////////////////////////////////////////////////////
 function addOptionField(agent, doc, fieldName){
     if(fieldName in doc ){
         agent[fieldName] = doc[fieldName]
     }
 }
 
+//////////////////////////////////////////////////////////////////
 function formatAgent(doc){
     var agent = {
         agentId: doc._key,
@@ -36,6 +39,7 @@ function formatAgent(doc){
     return agent
 }
 
+//////////////////////////////////////////////////////////////////
 async function getAgent(agentId) {
     var collection = db.collection(agentCollectionName)
     console.log('agentId', agentId)
@@ -46,6 +50,7 @@ async function getAgent(agentId) {
     return formatAgent(ret)
 }
 
+//////////////////////////////////////////////////////////////////
 async function getAgentByName(agentName) {
     var ret= {}
     await db.query(`FOR doc IN ${agentCollectionName} filter doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
@@ -57,6 +62,7 @@ async function getAgentByName(agentName) {
     return ret
 }
 
+//////////////////////////////////////////////////////////////////
 async function updateAgent(agent) {
     var collection = db.collection(agentCollectionName)
     await collection.update(agent.agentId, agent).then(
@@ -67,6 +73,7 @@ async function updateAgent(agent) {
     return { retCode: "success" ,agentId: agent.agentId}
 }
 
+//////////////////////////////////////////////////////////////////
 async function addAgent(agent) {
     var collection = db.collection(agentCollectionName)
     var agentId = await collection.save(agent).then(
@@ -76,6 +83,7 @@ async function addAgent(agent) {
     return { retCode: "success", agentId }
 }
 
+//////////////////////////////////////////////////////////////////
 async function deleteAgent(agentId) {
     var collection = db.collection(agentCollectionName)
     await collection.remove(agentId).then(
@@ -86,6 +94,7 @@ async function deleteAgent(agentId) {
 }
 
 
+//////////////////////////////////////////////////////////////////
 module.exports = {
     getAgentsAll,
     getAgent,

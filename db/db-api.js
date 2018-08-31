@@ -244,30 +244,32 @@ async function generateSentencesFor(intent, pattern) {
     return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
 }
 
+//////////////////////////////////////////////////////////////////
 async function generateDone(intent){
     var positive = await getPatternFor(intent, "positive")
     var negative = await getPatternFor(intent, "negative")
     var intentPhrase = await getPhraseFor(intent)
     var intentParas = await getParasFor(intent)
-
+    
     await dbUtils.dropArrayAllItems(intent, "posGenSentence")
     await dbUtils.dropArrayAllItems(intent, "negGenSentence")
-
+    
     positive.forEach(pattern =>{
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
         console.log("sentences is", sentences)
         dbUtils.appendItemsToArray(intent, "posGenSentence", sentences)
     })
-
+    
     negative.forEach(pattern => {
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
         console.log("sentences is", sentences)
         dbUtils.appendItemsToArray(intent, "negGenSentence", sentences)
     })
-
+    
     return { retCode: "success" }
 }
 
+//////////////////////////////////////////////////////////////////
 function isMatchPhrase(sentence, label, phraseId, phrase){
     if(phrase == ''){
         return label.id == phraseId
@@ -276,6 +278,7 @@ function isMatchPhrase(sentence, label, phraseId, phrase){
     }
 }
 
+//////////////////////////////////////////////////////////////////
 function doUpdatePatterns(patterns, phraseId, phrase){
     return patterns.map(pattern =>{
         var newlabels = pattern.labels.filter((label)=>{
@@ -286,6 +289,7 @@ function doUpdatePatterns(patterns, phraseId, phrase){
     })    
 }
 
+//////////////////////////////////////////////////////////////////
 async function updatePatterns(intent, pharseId, phrase){
     var positives = await getPatternFor(intent, "positive")
     var negatives = await getPatternFor(intent, "negative")

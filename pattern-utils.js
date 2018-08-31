@@ -1,4 +1,4 @@
-
+//////////////////////////////////////////////////////////////////
 function removeLablel(sentence){
     var reg = /[\[\]]/g
     var labelReg = /\/L[0-9]/g

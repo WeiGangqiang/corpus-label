@@ -2,6 +2,7 @@ var arango = require('arangojs');
 var config = require('../config.js')
 var db = null 
 
+//////////////////////////////////////////////////////////////////
 function getDb(){
     if(db == null){
         Database = arango.Database;

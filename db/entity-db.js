@@ -14,7 +14,7 @@ async function getEntityNames(agent){
     return ret
 }
 
-
+//////////////////////////////////////////////////////////////////
 async function getEntitiesAll(agent) {
     var ret = []
     const collectionName = dbUtils.getEntityCollectionName(agent);
@@ -45,6 +45,7 @@ async function getEntity(agent, entityName) {
     return entity
 }
 
+//////////////////////////////////////////////////////////////////
 function buildDocBy(entity){
     var doc = {
         name: entity.name,
@@ -64,6 +65,7 @@ function buildDocBy(entity){
     return doc  
 }
 
+//////////////////////////////////////////////////////////////////
 async function addEntity(agent, entity) {
     const collectionName = dbUtils.getEntityCollectionName(agent);
     var collection = db.collection(collectionName)
@@ -75,6 +77,7 @@ async function addEntity(agent, entity) {
     return { retCode: "success", entityId }
 }
 
+//////////////////////////////////////////////////////////////////
 async function deleteEntity(agent, entityId) {
     const collectionName = dbUtils.getEntityCollectionName(agent);
     var collection = db.collection(collectionName)
@@ -85,6 +88,7 @@ async function deleteEntity(agent, entityId) {
     return { retCode: "success" }
 }
 
+//////////////////////////////////////////////////////////////////
 async function getEntityId(collectionName, entityName){
     var ret = ''
     await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc._key`)
@@ -94,6 +98,7 @@ async function getEntityId(collectionName, entityName){
     return ret
 }
 
+//////////////////////////////////////////////////////////////////
 async function updateEntity(agent, entity){
     const collectionName = dbUtils.getEntityCollectionName(agent);
     var collection = db.collection(collectionName)

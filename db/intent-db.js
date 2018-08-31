@@ -19,4 +19,19 @@ async function getIntentsFor(agent) {
     return ret
 }
 
-module.exports = { getIntentsFor}
+//////////////////////////////////////////////////////////////////
+async function getIntentsForServer(agent){
+    var ret = []
+    const collectionName = dbUtils.getIntentCollectionName(agent);
+    await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
+        .then(intents => format(intents, ret),
+            err => console.error("error log", err))
+    return ret
+}
+
+
+
+module.exports = { 
+    getIntentsFor,
+    getIntentsForServer
+}
