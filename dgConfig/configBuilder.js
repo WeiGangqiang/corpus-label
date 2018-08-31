@@ -7,22 +7,27 @@ const uuid = require('node-uuid');
 var async = require('async');
 const tempPath = "temp/"
 
-//////////////////////////////////////////////////////////////////
-function intentPath(configPath){
-    return configPath +  "/intent"
+function agentPath(configPath, agent){
+    return configPath + "/" + agent
 }
 
 //////////////////////////////////////////////////////////////////
-function entityPath(configPath){
-    return configPath + "/entities"
+function intentPath(configPath, agent){
+    return agentPath(configPath, agent) +  "/intent"
 }
 
 //////////////////////////////////////////////////////////////////
-async function createAgentConfigPaths(configPath){
+function entityPath(configPath, agent){
+    return agentPath(configPath, agent) + "/entities"
+}
+
+//////////////////////////////////////////////////////////////////
+async function createAgentConfigPaths(configPath, agent){
     try {
         await fileUtils.mkdirP(configPath)
-        await fileUtils.mkdirP(intentPath(configPath)) 
-        await fileUtils.mkdirP(entityPath(configPath))         
+        await fileUtils.mkdirP(agentPath(configPath,agent))
+        await fileUtils.mkdirP(intentPath(configPath, agent)) 
+        await fileUtils.mkdirP(entityPath(configPath, agent))         
     } catch (error) {
         console.error('create agent config path fail')
         console.error(error)
@@ -37,11 +42,11 @@ async function buildAgentConfig(configPath, agentName){
 }
 
 //////////////////////////////////////////////////////////////////
-async function doBuildEntityConfig(configPath, entity){
+async function doBuildEntityConfig(entityPath, entity){
     var entityYaml = {}
     entityYaml.enum = entity.name
     entityYaml.values =[{list: entity.items}]
-    await fileUtils.writeYaml(entityPath(configPath) + "/" + entity.name + ".yaml", entityYaml)
+    await fileUtils.writeYaml(entityPath + "/" + entity.name + ".yaml", entityYaml)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -49,7 +54,7 @@ async function buildConfigForEntities(configPath, agentName){
     var entities = await entityDb.getEntitiesAll(agentName)
     console.log('entities is', entities)
     async.each(entities, function(entity,callBack){
-        doBuildEntityConfig(configPath, entity)
+        doBuildEntityConfig(entityPath(configPath, agentName), entity)
     }, function(error){
         console.error('error for build entity config', error)
     })
@@ -67,7 +72,7 @@ function doBuildIntentParameters(parameters){
 }
 
 //////////////////////////////////////////////////////////////////
-async function doBuildIntentConfig(configPath, intent){
+async function doBuildIntentConfig(intentPath, intent){
     var intentYaml = {}
     intentYaml["intent"] = intent.name
     intentYaml["zh-name"] = intent.zhName
@@ -82,7 +87,7 @@ async function doBuildIntentConfig(configPath, intent){
     intentYaml["user-says"] = []
     intentYaml["replies"] = ["我是小哒"]
     console.log('build itent is', intentYaml)
-    await fileUtils.writeYaml(intentPath(configPath) + "/" + intent.name + ".yaml", intentYaml)
+    await fileUtils.writeYaml(intentPath + "/" + intent.name + ".yaml", intentYaml)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -90,7 +95,7 @@ async function buildConfigForIntent(configPath, agentName){
     var intents = await intentDb.getIntentsForServer(agentName)
     console.log("intents is", intents)
     async.each(intents, function(intent, callBack){
-        doBuildIntentConfig(configPath, intent)
+        doBuildIntentConfig(intentPath(configPath, agentName), intent)
     }, function(error){
         console.error('error for build intent', error)
     }) 
@@ -101,7 +106,7 @@ async function buildConfigForIntent(configPath, agentName){
 async function buildConfigs(agent) {
     var configPath = tempPath + uuid.v1()
     try {
-        await createAgentConfigPaths(configPath)
+        await createAgentConfigPaths(configPath, agent)
         await buildAgentConfig(configPath, agent)
         await buildConfigForEntities(configPath,agent)
         await buildConfigForIntent(configPath, agent)
