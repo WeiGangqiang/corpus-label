@@ -17,6 +17,12 @@ function getPhraseCollectionName(agent) {
 }
 
 //////////////////////////////////////////////////////////////////
+function findFailRsp(retText, error){
+    console.log(retText, error)
+    return {retCode : "fail", retText}
+}
+
+//////////////////////////////////////////////////////////////////
 async function getArrayListFor(intent, fieldName) {
     var ret = []
     console.log(`get array for agent ${intent.agent} intent id ${intent.intentId}, fieldName ${fieldName}`)
@@ -45,10 +51,8 @@ async function addToArrayTo(intent, fieldName, value) {
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("add success, result is ", ret),
-            err => { console.error("add fail, log is ", err); retCode = "add failed" })
-
+            err => console.error("add fail, log is ", err))
 }
-
 
 //////////////////////////////////////////////////////////////////
 async function updateToArrayTo(intent, fieldName, values) {
@@ -64,7 +68,7 @@ async function updateToArrayTo(intent, fieldName, values) {
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("add success, result is ", ret),
-            err => { console.error("add fail, log is ", err); retCode = "add failed" })
+            err => console.error("add fail, log is ", err))
 
 }
 
@@ -82,7 +86,7 @@ async function removeFromArray(intent, fieldName, index) {
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("remove success, result is ", ret),
-            err => { console.error("remove fail, log is ", err); retCode = "add failed" })
+            err => console.error("remove fail, log is ", err))
 
 }
 
@@ -98,7 +102,7 @@ async function dropArrayAllItems(intent, fieldName){
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("drop arrays success, result is ", ret),
-            err => { console.error("drop arrays fail, log is ", err); retCode = "add failed" })
+            err => console.error("drop arrays fail, log is ", err))
 
 }
 
@@ -116,8 +120,7 @@ async function appendItemsToArray(intent, fieldName, values){
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("append items success, result is ", ret),
-            err => { console.error("append items fail, log is ", err); retCode = "add failed" })
-
+            err => console.error("append items fail, log is ", err))
 }
 
 //////////////////////////////////////////////////////////////////
@@ -134,7 +137,7 @@ async function updateArrayItem(intent, fieldName, index, value) {
     await db.query(aql)
         .then(cursor => cursor.all())
         .then(ret => console.info("update success, result is ", ret),
-            err => { console.error("update fail, log is ", err); retCode = "add failed" })
+            err => console.error("update fail, log is ", err))
 }
 
 
@@ -148,5 +151,6 @@ module.exports={
     removeFromArray,
     dropArrayAllItems,
     appendItemsToArray,
-    updateArrayItem
+    updateArrayItem,
+    findFailRsp
 }

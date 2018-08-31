@@ -9,11 +9,10 @@ function formatIntent(intent){
 
 //////////////////////////////////////////////////////////////////
 async function getIntentsFor(agent) {
-    var ret = []
     const collectionName = dbUtils.getIntentCollectionName(agent);
-    await db.query(`FOR doc IN ${collectionName} return doc `).then(cursor => cursor.all())
-        .then(intents => format(intents, ret),
-            err => console.error("error log", err))
+    var ret = await db.query(`FOR doc IN ${collectionName} return doc `).then(cursor => cursor.all())
+        .then(intents => intents.map( intent => {return formatIntent(intent)}),
+              err => { console.error("error log", err); return []})
     return ret
 }
 
@@ -21,14 +20,24 @@ async function getIntentsFor(agent) {
 async function getIntentsForServer(agent){
     const collectionName = dbUtils.getIntentCollectionName(agent);
     var ret = await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
-        .then(intents => intents.map( intent => {return formatIntent(intent)}),
-            err => { console.error("error log", err); return []})
+    .then(intents => intents.map( intent => {return formatIntent(intent)}),
+    err => { console.error("error log", err); return []})
     return ret
 }
 
+//////////////////////////////////////////////////////////////////
+async function getIntent(agent, intentId) {
+    const collectionName = dbUtils.getIntentCollectionName(agent);
+    var collection = db.collection(collectionName)
+    console.log('find intent by id', intentId)
+    return await collection.document(intentId).then(
+        doc => { return formatIntent(doc) },
+        err => { return dbUtils.findFailRsp('Failed to fetch agent document:', err)});
+}
 
 
 module.exports = { 
     getIntentsFor,
-    getIntentsForServer
+    getIntentsForServer,
+    getIntent
 }

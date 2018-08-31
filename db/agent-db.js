@@ -43,11 +43,9 @@ function formatAgent(doc){
 async function getAgent(agentId) {
     var collection = db.collection(agentCollectionName)
     console.log('agentId', agentId)
-    var ret = {}
-    await collection.document(agentId).then(
-        doc => ret = doc,
-        err => console.error('Failed to fetch agent document:', err.message));
-    return formatAgent(ret)
+    return await collection.document(agentId).then(
+        doc => { return formatAgent(doc) },
+        err => { return dbUtils.findFailRsp('Failed to fetch agent document:', err)});
 }
 
 //////////////////////////////////////////////////////////////////

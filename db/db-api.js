@@ -39,10 +39,8 @@ async function getParasFor(intent) {
         parameters[i].subEntities = entityInfo.subEntities
         parameters[i].kind = entityInfo.kind
     }
-
     return parameters
 }
-
 
 //////////////////////////////////////////////////////////////////
 function getPatternField(type){
@@ -131,6 +129,7 @@ async function deletePhraseFor(intent, phraseId) {
     return { retCode: "success" }
 }
 
+//////////////////////////////////////////////////////////////////
 function searchPhrase(term, intentPhrase) {
     var ret = intentPhrase.find((phrase) => {
         return phrase.similars.includes(term)
@@ -138,6 +137,7 @@ function searchPhrase(term, intentPhrase) {
     return ret ? ret.phraseId : ""
 }
 
+//////////////////////////////////////////////////////////////////
 function searchPara(term, intentParas) {
     var ret = intentParas.find((para) => {
         return para.values.map((value) => {

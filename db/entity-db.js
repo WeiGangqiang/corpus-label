@@ -27,22 +27,25 @@ async function getEntitiesAll(agent) {
 }
 
 //////////////////////////////////////////////////////////////////
+function formatEntity(doc){
+    var entity = {
+        name : doc.name,
+        items: doc.items,
+        entityId   : doc._key,
+        zhName     : doc.zhName,
+        createTime : doc.createTime,
+    }  
+    return entity
+}
+
+//////////////////////////////////////////////////////////////////
 async function getEntity(agent, entityName) {
     var ret = {}
     const collectionName = dbUtils.getEntityCollectionName(agent);
-    await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
+    return await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
-        .then(entities => ret = entities[0],
-            err => console.error("error log", err))
-
-    var entity = {
-        name : ret.name,
-        items: ret.items,
-        entityId   : ret._key,
-        zhName     : ret.zhName,
-        createTime : ret.createTime,
-    }             
-    return entity
+        .then(entities => { return formatEntity(entities[0])},
+            err => { return dbUtils.findFailRsp("error log", err)})
 }
 
 //////////////////////////////////////////////////////////////////
