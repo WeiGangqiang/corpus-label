@@ -3,10 +3,8 @@ var dbUtils = require('./dbUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
-function format(intents, ret) {
-    for (i in intents) {
-        ret.push({ intentId: intents[i]._key, name: intents[i].name, zhName: intents[i].zhName, modelPath: intents[i].modelPath })
-    }
+function formatIntent(intent){
+    return { intentId: intent._key, name: intent.name, zhName: intent.zhName, modelPath: intent.modelPath, parameters:intent.parameters }
 }
 
 //////////////////////////////////////////////////////////////////
@@ -21,11 +19,10 @@ async function getIntentsFor(agent) {
 
 //////////////////////////////////////////////////////////////////
 async function getIntentsForServer(agent){
-    var ret = []
     const collectionName = dbUtils.getIntentCollectionName(agent);
-    await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
-        .then(intents => format(intents, ret),
-            err => console.error("error log", err))
+    var ret = await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
+        .then(intents => intents.map( intent => {return formatIntent(intent)}),
+            err => { console.error("error log", err); return []})
     return ret
 }
 
