@@ -719,3 +719,125 @@
 { retcode: "success" }
 
 ```
+
+
+
+##13.0 实体
+### 13.1 查询意图列表
+* 请求方式
+
+``` get http://localhost:port/intent/all```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+
+* 响应
+```
+[
+    {
+        "intentId": "14700686044264578",
+        "name": "record-course",
+        "zhName": "录课程",
+        "modelPath": "users/course-record/record-course",
+        "parameters"[]
+    },
+    {
+        "intentId": "14700686044264535",
+        "name": "query-exsited-books",
+        "zhName": "查询其他时间",
+        "modelPath": "users/course-record/query-specifed-book:query-exsited-books",
+        "parameters"[]
+    }
+]
+```
+
+###13.2 查询指定意图
+
+* 请求方式
+
+``` get http://localhost:port/intent```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+| intentId | `String` | 意图的ID |
+
+
+* 响应
+```
+{
+    "intentId": "14700686057364764",
+    "name": "who-you-are",
+    "zhName": "你是谁",
+    "modelPath": "users/corpus-test/who-you-are",
+    "parameters": []
+}
+```
+
+###13.3 添加指定意图
+* 请求方式
+
+``` post http://localhost:port/intent```
+
+* 参数
+
+```
+{
+    "name": "who-you-are",
+    "zhName": "你是谁",
+    "modelPath": "users/corpus-test/who-you-are",
+    "parameters": []
+}
+```
+
+* 响应
+```
+{ retcode: "success" , intentId: "14700686055670147"}
+```
+
+
+###13.4 更新指定意图
+
+* 请求方式
+
+``` put http://localhost:port/intent```
+
+* 参数
+
+```
+{
+    "intentId": "14700686055670147"
+    "name": "who-you-are",
+    "zhName": "你是谁",
+    "modelPath": "users/corpus-test/who-you-are",
+    "parameters": []
+}
+```
+
+* 响应
+```
+{ retcode: "success" }
+
+```
+
+###13.5 删除指定的意图
+* 请求方式
+
+``` delete http://localhost:port/intent```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent的名字 |
+| intentId | `String` | 意图的ID |
+
+* 响应
+```
+{ retcode: "success" }
+```
