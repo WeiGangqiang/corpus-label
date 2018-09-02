@@ -52,6 +52,7 @@ async function getEntity(agent, entityName) {
 function buildDocBy(entity){
     var doc = {
         name: entity.name,
+        mode: "server",
         zhName: entity.zhName,
         createTime: entity.createTime,
         items: entity.items,
