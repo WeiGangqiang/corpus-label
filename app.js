@@ -79,9 +79,8 @@ app.post("/generate", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/label-done", async function(req, res){
-    var intent = utils.getIntentFromReqBody(req)
-    var ret = await dbApi.generateDone(intent)
+app.post("/remote-dg", async function(req, res){
+    var ret = await dbApi.generateDone(req.body.agent, req.body.modelPath)
     res.send(ret)
 })
 
@@ -93,11 +92,15 @@ app.post("/pattern/sync", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
+app.use("/package", express.static("static"))
+
+//////////////////////////////////////////////////////////////////
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
 
 //////////////////////////////////////////////////////////////////
 app.use(function(err, req, res, next) {

@@ -110,11 +110,13 @@ async function buildConfigs(agent) {
         await buildAgentConfig(configPath, agent)
         await buildConfigForEntities(configPath,agent)
         await buildConfigForIntent(configPath, agent)
-        await zipUtils.zipPath(configPath, "static/corpus-test.zip")        
+        await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
+        fileUtils.deleteDir(configPath)      
+        return { retCode: "success" } 
     } catch (error) {
         console.error(' build configs error is', error)
+        return { retCode : "failed" }
     }
-    return { retCode: "success" }     
 }
 
 

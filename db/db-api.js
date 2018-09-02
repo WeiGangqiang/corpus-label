@@ -244,8 +244,24 @@ async function generateSentencesFor(intent, pattern) {
     return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
 }
 
+async function getIntentIdByModelPath(agent, modelPath) {
+    const collectionName = dbUtils.getIntentCollectionName(agent);
+    var ret = await db.query(`FOR doc IN ${collectionName} filter doc.modelPath=='${modelPath}' return doc `).then(cursor => cursor.all())
+    .then(intents => { if(intents.length == 0) return null;
+                       return intents[0]._key },
+    err => { console.error("error log", err); return null})
+    return ret
+}
+
 //////////////////////////////////////////////////////////////////
-async function generateDone(intent){
+async function generateDone(agent, modelPath){
+    var intent = {}
+    intent.agent = agent
+    intent.intentId = await getIntentIdByModelPath(agent, modelPath)
+    if (intent.intentId == null){
+        return { retCode: "failed" }
+    }
+    console.log('generate sentence is called', intent)
     var positive = await getPatternFor(intent, "positive")
     var negative = await getPatternFor(intent, "negative")
     var intentPhrase = await getPhraseFor(intent)

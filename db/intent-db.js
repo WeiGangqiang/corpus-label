@@ -107,5 +107,5 @@ module.exports = {
     getIntent,
     addIntent,
     deleteIntent,
-    updateIntent,
+    updateIntent
 }
