@@ -841,3 +841,26 @@
 ```
 { retcode: "success" }
 ```
+
+
+
+## 14.0 生成语料
+* 请求方式
+
+``` post http://localhost:port/remote-dg```
+
+* 参数
+
+```
+{
+ "agent":   "corpus-test"
+ "modelPath"  :  "users/corpus-test/who-you-are"
+}
+```
+
+* 响应
+```
+{ retcode: "success" }
+
+```
+

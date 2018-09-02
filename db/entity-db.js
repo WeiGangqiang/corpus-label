@@ -31,6 +31,7 @@ function formatEntity(doc){
     var entity = {
         name : doc.name,
         items: doc.items,
+        mode : doc.mode,
         entityId   : doc._key,
         zhName     : doc.zhName,
         createTime : doc.createTime,
