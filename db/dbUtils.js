@@ -1,4 +1,5 @@
 var arongodb = require('./arongo.js')
+var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
@@ -48,10 +49,13 @@ async function addToArrayTo(intent, fieldName, value) {
                  }in ${collectionName}`
 
     console.info("add to array aql is :", aql)
-    await db.query(aql)
+    return await db.query(aql)
         .then(cursor => cursor.all())
-        .then(ret => console.info("add success, result is ", ret),
-            err => console.error("add fail, log is ", err))
+        .then(ret => {
+            console.info("add array success, result is ", ret);
+            return restUtils.successRsp(null)
+        },
+            err => { return restUtils.failRsp(`add array ${fieldName} to ${collectionName} fail`, err) })
 }
 
 //////////////////////////////////////////////////////////////////
@@ -65,11 +69,11 @@ async function updateToArrayTo(intent, fieldName, values) {
                  }in ${collectionName}`
 
     console.info("update to array aql is :", aql)
-    await db.query(aql)
+    return await db.query(aql)
         .then(cursor => cursor.all())
-        .then(ret => console.info("add success, result is ", ret),
-            err => console.error("add fail, log is ", err))
-
+        .then(ret => { console.info("update array success, result is ", ret);
+                       return restUtils.successRsp(null)},
+        err =>  { return restUtils.failRsp(`update array ${fieldName} to ${collectionName} fail`, err)})
 }
 
 //////////////////////////////////////////////////////////////////
@@ -83,11 +87,13 @@ async function removeFromArray(intent, fieldName, index) {
                  }in ${collectionName}`
 
     console.info("remove from array aql is :", aql)
-    await db.query(aql)
+    return await db.query(aql)
         .then(cursor => cursor.all())
-        .then(ret => console.info("remove success, result is ", ret),
-            err => console.error("remove fail, log is ", err))
-
+        .then(ret => {
+            console.info("remove success, result is ", ret);
+            return restUtils.successRsp(null)
+        },
+            err => { return restUtils.failRsp(`update array ${fieldName} to ${collectionName} fail`, err) })
 }
 
 //////////////////////////////////////////////////////////////////

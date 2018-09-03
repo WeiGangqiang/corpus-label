@@ -1,6 +1,7 @@
 var pattern = require('../pattern-utils.js')
 var arongodb = require('./arongo.js')
 var dbUtils = require('./dbUtils.js')
+var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
@@ -18,11 +19,10 @@ async function getEntityValuesFor(agent, entityName) {
 //////////////////////////////////////////////////////////////////
 async function addSentence(msg) {
     const accept = msg.accept
-    var retCode = "success"
     if (accept == true) {
-        await dbUtils.addToArrayTo(msg, "positive", msg.sentence)
+        return await dbUtils.addToArrayTo(msg, "positive", msg.sentence)
     }
-    return { retcode: retCode }
+    return restUtils.successRsp(null)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -54,20 +54,17 @@ async function getPatternFor(intent, type) {
 
 //////////////////////////////////////////////////////////////////
 async function addPatternFor(intent, value, type) {
-    dbUtils.addToArrayTo(intent, getPatternField(type), value)
-    return { retCode: "success" }
+    return await dbUtils.addToArrayTo(intent, getPatternField(type), value)
 }
 
 //////////////////////////////////////////////////////////////////
 async function removePatternFor(intent, index, type) {
-    dbUtils.removeFromArray(intent, getPatternField(type), index)
-    return { retCode: "success" }
+    return await dbUtils.removeFromArray(intent, getPatternField(type), index)
 }
 
 //////////////////////////////////////////////////////////////////
 async function updatePatternFor(intent, index, value, type) {
-    dbUtils.updateArrayItem(intent, getPatternField(type), index, value)
-    return { retCode: "success" }
+    return await dbUtils.updateArrayItem(intent, getPatternField(type), index, value)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -311,8 +308,8 @@ async function updatePatterns(intent, pharseId, phrase){
     var negatives = await getPatternFor(intent, "negative")
     positives = doUpdatePatterns(positives, pharseId, phrase)
     negatives = doUpdatePatterns(negatives, pharseId, phrase)
-    dbUtils.updateToArrayTo(intent, getPatternField("positive"), positives)
-    dbUtils.updateToArrayTo(intent, getPatternField("negative"), negatives)
+    await dbUtils.updateToArrayTo(intent, getPatternField("positive"), positives)
+    await dbUtils.updateToArrayTo(intent, getPatternField("negative"), negatives)
     return { retCode: "success"}
 }
 

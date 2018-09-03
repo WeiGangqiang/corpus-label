@@ -33,6 +33,14 @@ app.put("/", async function(req, res){
     res.send(ret)
 })
 
+app.get("/actions", async function(req, res){
+    var ret = await dbApi.getIntentActions(req.body.agent, req.body.intentId)
+})
+
+app.post("/actions", async function(req, res){
+    var ret = await dbApi.updateIntentActions(req.body.agent, req.body.intentId, req.body.actions)
+    res.send(ret)
+})
 
 module.exports = {
     app

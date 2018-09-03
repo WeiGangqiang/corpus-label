@@ -1,5 +1,6 @@
 var arongodb = require('./arongo.js')
 var dbUtils = require('./dbUtils.js')
+var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
@@ -33,6 +34,22 @@ async function getIntent(agent, intentId) {
     return await collection.document(intentId).then(
         doc => { return formatIntent(doc) },
         err => { return dbUtils.findFailRsp('Failed to fetch agent document:', err)});
+}
+
+//////////////////////////////////////////////////////////////////
+async function getIntentActions(agent, intentId){
+    const collectionName = dbUtils.getIntentCollectionName(agent);
+    var collection = db.collection(collectionName)
+    console.log('find intent by id', intentId)
+    return await collection.document(intentId).then(
+        doc => { if(actions in doc) return restUtils.successRsp(doc.actions);
+                 return restUtils.successRsp([])},
+        err => { return dbUtils.findFailRsp('Failed to fetch intent document:', err)});
+}
+
+//////////////////////////////////////////////////////////////////
+async function updateIntentActions(agent, intentId, actions){
+    return await dbUtils.updateToArrayTo({agent, intentId}, "actions", actions)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -107,5 +124,7 @@ module.exports = {
     getIntent,
     addIntent,
     deleteIntent,
-    updateIntent
+    updateIntent,
+    getIntentActions,
+    updateIntentActions
 }
