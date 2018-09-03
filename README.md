@@ -864,3 +864,58 @@
 
 ```
 
+
+## 15.0 动作
+###15.1 查询动作
+
+* 请求方式
+
+``` get http://localhost:port/intent/actions```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+| intentId | `String` | 意图的ID |
+
+
+* 响应
+```
+{
+    "retCode": "success",
+    "data": [
+        {
+            "type": "replies",
+            "values": [
+                "你是谁",
+                "我爱你"
+            ]
+        }
+    ]
+}
+```
+
+###15.2 更新动作
+* 请求方式
+
+``` post http://localhost:port/intent/actions```
+
+* 参数
+
+```
+{"agent":"corpus-test",
+"intentId": "14700686058075550",
+"actions": [{"type": "replies", "values": ["你是谁", "我爱你"] }] 
+}
+```
+
+* 响应
+```
+{ retcode: "success" , data: null}
+```
+
+
+
+
+
