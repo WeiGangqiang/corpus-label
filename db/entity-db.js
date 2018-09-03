@@ -1,5 +1,6 @@
 var arongodb = require('./arongo.js')
 var dbUtils = require('./dbUtils.js')
+var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
@@ -46,7 +47,7 @@ async function getEntity(agent, entityName) {
     return await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
         .then(entities => { return formatEntity(entities[0])},
-            err => { return dbUtils.findFailRsp("error log", err)})
+            err => { return restUtils.failRsp("get entity error", err)})
 }
 
 //////////////////////////////////////////////////////////////////

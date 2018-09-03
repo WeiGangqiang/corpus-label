@@ -33,7 +33,7 @@ async function getIntent(agent, intentId) {
     console.log('find intent by id', intentId)
     return await collection.document(intentId).then(
         doc => { return formatIntent(doc) },
-        err => { return dbUtils.findFailRsp('Failed to fetch agent document:', err)});
+        err => { return restUtils.failRsp('Failed to fetch agent document:', err)});
 }
 
 //////////////////////////////////////////////////////////////////
@@ -42,9 +42,9 @@ async function getIntentActions(agent, intentId){
     var collection = db.collection(collectionName)
     console.log('find intent by id', intentId)
     return await collection.document(intentId).then(
-        doc => { if(actions in doc) return restUtils.successRsp(doc.actions);
+        doc => { if("actions" in doc) return restUtils.successRsp(doc.actions);
                  return restUtils.successRsp([])},
-        err => { return dbUtils.findFailRsp('Failed to fetch intent document:', err)});
+        err => { return restUtils.failRsp('Failed to fetch intent document:', err)});
 }
 
 //////////////////////////////////////////////////////////////////

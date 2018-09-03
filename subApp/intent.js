@@ -34,7 +34,8 @@ app.put("/", async function(req, res){
 })
 
 app.get("/actions", async function(req, res){
-    var ret = await dbApi.getIntentActions(req.body.agent, req.body.intentId)
+    var ret = await dbApi.getIntentActions(req.query.agent, req.query.intentId)
+    res.send(ret)
 })
 
 app.post("/actions", async function(req, res){

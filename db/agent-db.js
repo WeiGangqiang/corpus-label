@@ -1,5 +1,6 @@
 var arongodb = require('./arongo.js')
 var dbUtils = require('./dbUtils.js')
+var restUtils = require('./restUtils.js')
 var db = arongodb.getDb();
 const agentCollectionName = "agentTable"
 
@@ -45,7 +46,7 @@ async function getAgent(agentId) {
     console.log('agentId', agentId)
     return await collection.document(agentId).then(
         doc => { return formatAgent(doc) },
-        err => { return dbUtils.findFailRsp('Failed to fetch agent document:', err)});
+        err => { return restUtils.failRsp('Failed to fetch agent document:', err)});
 }
 
 //////////////////////////////////////////////////////////////////
