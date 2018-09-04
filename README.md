@@ -787,11 +787,13 @@
 * 参数
 
 ```
-{
+{"agent": "corpus-test"
+ "intent": {
     "name": "who-you-are",
     "zhName": "你是谁",
     "modelPath": "users/corpus-test/who-you-are",
     "parameters": []
+    }
 }
 ```
 
@@ -810,13 +812,16 @@
 * 参数
 
 ```
-{
+{"agent": "corpus-test"
+ "intent" :{
     "intentId": "14700686055670147"
     "name": "who-you-are",
     "zhName": "你是谁",
     "modelPath": "users/corpus-test/who-you-are",
     "parameters": []
 }
+}
+
 ```
 
 * 响应
