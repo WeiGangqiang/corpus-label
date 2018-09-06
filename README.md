@@ -538,6 +538,28 @@
 ```
 
 
+###9.6 打包指定的agent
+* 请求方式
+
+``` delete http://localhost:port/agent/pack```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agentId | `String` | agentId |
+| agent | `String` | 名字 |
+
+* 响应
+```
+{ retcode: "success" }
+```
+
+###9.6 打包模型下载路径
+```http://localhost:port/package/{agentName}.zip ```
+
+
+
 ##10.0 实体
 ### 10.1 查询实体列表
 * 请求方式

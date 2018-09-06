@@ -8,6 +8,7 @@ var db = arongodb.getDb()
 async function getEntityValuesFor(agent, entityName) {
     var ret = []
     const collectionName = dbUtils.getEntityCollectionName(agent);
+    console.log('get collection name', collectionName, entityName)
     await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
         .then(entitys => ret = entitys[0],
@@ -28,12 +29,14 @@ async function addSentence(msg) {
 //////////////////////////////////////////////////////////////////
 async function getParasFor(intent) {
     var parameters = await dbUtils.getArrayListFor(intent, "parameters")
+    console.log('parameters', parameters)
     for (i in parameters) {
         var para = parameters[i]
         var entityNames = para.entity.split(".")
         var entityAgent = (entityNames.length > 1) ? entityNames[0] : intent.agent
         var entityName = (entityNames.length > 1) ? entityNames[1] : entityNames[0]
         var entityInfo = await getEntityValuesFor(entityAgent, entityName)
+        console.log('entityInfo',entityInfo)
         parameters[i].values = entityInfo.values
         parameters[i].choices = entityInfo.choices
         parameters[i].subEntities = entityInfo.subEntities

@@ -13,8 +13,8 @@ app.get("/all", async function(req, res){
     res.send(agents)
 })
 
-app.post("/create", async function(req, res){
-    var ret = await builder.buildConfigs('corpus-test')
+app.post("/package", async function(req, res){
+    var ret = await builder.buildConfigs(req.query.agent)
     res.send(ret)
 })
 
