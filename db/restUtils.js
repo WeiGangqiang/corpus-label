@@ -1,7 +1,7 @@
 
 //////////////////////////////////////////////////////////////////
 function failRsp(retText, error){
-    console.log(retText, error)
+    console.error(retText, error)
     return {retCode : "fail", retText}
 }
 

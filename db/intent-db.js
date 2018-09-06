@@ -100,7 +100,7 @@ function buildIntentBaseDocBy(intent){
         name: intent.name,
         zhName: intent.zhName,
         modelPath: intent.modelPath,
-        parameters: intent.parameters,
+        // parameters: intent.parameters,
     }
     return doc
 }
@@ -117,6 +117,80 @@ async function updateIntent(agent, intent) {
     return { retCode: "success" }
 }
 
+//////////////////////////////////////////////////////////////////
+function labelToIndex(label){
+    return parseInt(label.replace("L", 0))
+}
+
+//////////////////////////////////////////////////////////////////
+function indexToLabel(index){
+    return "L" + index
+}
+
+//////////////////////////////////////////////////////////////////
+async function addParameter(intent, parameter){
+    var intentInfo = await getIntent(intent.agent, intent.intentId)
+    let length = intentInfo.parameters.length
+    let para = {
+        name: parameter.name,
+        label: indexToLabel(length),
+        entity: parameter.entity,
+        isList: false
+    }
+    await dbUtils.appendItemsToArray(intent, "parameters", para)
+    return { retCode: "success"}
+}
+
+//////////////////////////////////////////////////////////////////
+async function deletePatternLabel(intent, labelId){
+    
+}
+
+//////////////////////////////////////////////////////////////////
+
+async function renamePatternLabel(intent, old_labelId, new_labelId){
+
+}
+
+//////////////////////////////////////////////////////////////////
+async function getParameterAll(intent){
+    var intentInfo = await getIntent(intent.agent, intent.intentId)
+    return intentInfo.parameters
+}
+
+async function deleteParameter(intent, parameter){
+    var parameters = await getParameterAll(intent)
+    var paraIndex  = labelToIndex(parameter.label)
+    var paras_lhs =  parameters.slice(0, paraIndex)
+    var paras_rhs =  parameters.slice(paraIndex + 1, parameters.length)
+    var paras_rhs_new = paras_rhs.map( para => {
+        let index = labelToIndex(para.label)
+        para.label = indexToLabel(index - 1)
+        return para
+    })
+    await deletePatternLabel(intent, parameter.name)
+    let newParameters = [...paras_lhs, ...paras_rhs_new]
+    await dbUtils.updateToArrayTo(intent, "parameters", newParameters)
+    return { retCode: "success"}
+}
+
+async function updateParameter(intent, parameter){
+    var parameters = await getParameterAll(intent)
+    var paraIndex  = labelToIndex(parameter.label)
+    if(parameters[paraIndex].entity == parameter.entity){
+        if(parameters[paraIndex].name != parameter.name){
+            await renamePatternLabel(intent, parameters[paraIndex].name, parameter.name)
+            parameters[paraIndex].name = parameter.name
+        }
+    }else{
+       await deletePatternLabel(intent, parameters[paraIndex].name)
+       parameters[paraIndex].name = parameter.name
+       parameters[paraIndex].entity = parameter.entity
+    }
+    await dbUtils.updateToArrayTo(intent, "parameters", parameters)
+    return { retCode: "success"}
+}
+
 
 module.exports = { 
     getIntentsFor,
@@ -126,5 +200,9 @@ module.exports = {
     deleteIntent,
     updateIntent,
     getIntentActions,
-    updateIntentActions
+    updateIntentActions,
+    addParameter,
+    getParameterAll,
+    deleteParameter,
+    updateParameter
 }

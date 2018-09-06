@@ -146,6 +146,12 @@ async function updateArrayItem(intent, fieldName, index, value) {
             err => console.error("update fail, log is ", err))
 }
 
+//////////////////////////////////////////////////////////////////
+function getPatternField(type){
+    return (type == "positive") ? "posPatterns" : "negPatterns"
+}
+
+
 
 module.exports={
     getIntentCollectionName,
@@ -158,5 +164,6 @@ module.exports={
     dropArrayAllItems,
     appendItemsToArray,
     updateArrayItem,
-    findFailRsp
+    findFailRsp,
+    getPatternField
 }

@@ -1,4 +1,5 @@
 var express = require("express");
+var utils = require('./utils.js')
 const dbApi = require('../db/intent-db.js')
 var app = express();
 
@@ -41,6 +42,32 @@ app.get("/actions", async function(req, res){
 app.post("/actions", async function(req, res){
     var ret = await dbApi.updateIntentActions(req.body.agent, req.body.intentId, req.body.actions)
     res.send(ret)
+})
+
+app.delete("/parameter", async function(req, res){
+    var intent = utils.getIntentFromReqBody(req)
+    var ret = await dbApi.deleteParameter(intent, req.body.parameter)
+    res.send(ret)
+})
+
+// app.get("/parameter", async function(req, res){
+
+// })
+
+// app.get("/parameter/all", async function(req, res){
+
+// })
+
+app.put("/parameter", async function(req, res){
+    var intent = utils.getIntentFromReqBody(req)
+    var ret = await dbApi.updateParameter(intent, req.body.parameter)
+    res.send(ret)
+})
+
+app.post("/parameter", async function(req, res){
+    var intent = utils.getIntentFromReqBody(req)
+    var ret = await dbApi.addParameter(intent, req.body.parameter)
+    res.send(ret) 
 })
 
 module.exports = {

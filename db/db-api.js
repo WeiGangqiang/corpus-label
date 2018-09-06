@@ -47,7 +47,7 @@ async function getParasFor(intent) {
 
 //////////////////////////////////////////////////////////////////
 function getPatternField(type){
-    return (type == "positive") ? "posPatterns" : "negPatterns"
+    return dbUtils.getPatternField(type)
 }
 
 //////////////////////////////////////////////////////////////////
