@@ -63,7 +63,7 @@ function buildIntentDocBy(agentName, intent){
         positive: [],
         negative: [],
         posPatterns: [],
-        posPatterns: [],
+        negPatterns: [],
         posGenSentence: [],
         posGenSentence: [],
         parameters: [],
