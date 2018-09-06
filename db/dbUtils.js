@@ -152,6 +152,11 @@ function getPatternField(type){
 }
 
 
+async function reUpdateArrayValues(intent, fieldName, operation){
+    var arrays = await getArrayListFor(intent, fieldName)
+    arrays = operation(arrays)
+    await updateToArrayTo(intent,fieldName, arrays)
+}
 
 module.exports={
     getIntentCollectionName,
@@ -165,5 +170,6 @@ module.exports={
     appendItemsToArray,
     updateArrayItem,
     findFailRsp,
-    getPatternField
+    getPatternField,
+    reUpdateArrayValues
 }

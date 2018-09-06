@@ -142,14 +142,48 @@ async function addParameter(intent, parameter){
 }
 
 //////////////////////////////////////////////////////////////////
-async function deletePatternLabel(intent, labelId){
-    
+function doDeleteLabelForPatterns(patterns, labelId){
+    return patterns.map(pattern =>{
+        var newlabels = pattern.labels.filter((label)=>{
+            return label.type != "entity" || label.id != labelId
+        })
+        pattern.labels = newlabels
+        return pattern
+    })    
 }
 
 //////////////////////////////////////////////////////////////////
+function doRenameLabelForPatterns(patterns, old_labelId, new_labelId){
+    return patterns.map(pattern =>{
+        var newlabels = pattern.labels.map((label)=>{
+            if(label.type == "entity" && label.id == old_labelId){
+                label.id = new_labelId
+            }
+            return label       
+        })
+        pattern.labels = newlabels
+        return pattern
+    })    
+}
 
+//////////////////////////////////////////////////////////////////
+async function deletePatternLabel(intent, labelId){
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("positive"), (arrays) => {
+        return doDeleteLabelForPatterns(arrays, labelId)
+    })
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("negative"), (arrays) => {
+        return doDeleteLabelForPatterns(arrays, labelId)
+    })  
+}
+
+//////////////////////////////////////////////////////////////////
 async function renamePatternLabel(intent, old_labelId, new_labelId){
-
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("positive"), (arrays) => {
+        return doRenameLabelForPatterns(arrays, old_labelId, new_labelId)
+    })
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("negative"), (arrays) => {
+        return doRenameLabelForPatterns(arrays, old_labelId, new_labelId)
+    })
 }
 
 //////////////////////////////////////////////////////////////////
@@ -158,6 +192,7 @@ async function getParameterAll(intent){
     return intentInfo.parameters
 }
 
+//////////////////////////////////////////////////////////////////
 async function deleteParameter(intent, parameter){
     var parameters = await getParameterAll(intent)
     var paraIndex  = labelToIndex(parameter.label)
@@ -174,6 +209,7 @@ async function deleteParameter(intent, parameter){
     return { retCode: "success"}
 }
 
+//////////////////////////////////////////////////////////////////
 async function updateParameter(intent, parameter){
     var parameters = await getParameterAll(intent)
     var paraIndex  = labelToIndex(parameter.label)

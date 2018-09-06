@@ -307,12 +307,12 @@ function doUpdatePatterns(patterns, phraseId, phrase){
 
 //////////////////////////////////////////////////////////////////
 async function updatePatterns(intent, pharseId, phrase){
-    var positives = await getPatternFor(intent, "positive")
-    var negatives = await getPatternFor(intent, "negative")
-    positives = doUpdatePatterns(positives, pharseId, phrase)
-    negatives = doUpdatePatterns(negatives, pharseId, phrase)
-    await dbUtils.updateToArrayTo(intent, getPatternField("positive"), positives)
-    await dbUtils.updateToArrayTo(intent, getPatternField("negative"), negatives)
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("positive"), (arrays) => {
+        return doUpdatePatterns(arrays, pharseId, phrase)
+    })
+    await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("negative"), (arrays) => {
+        return doUpdatePatterns(arrays, pharseId, phrase)
+    })
     return { retCode: "success"}
 }
 
