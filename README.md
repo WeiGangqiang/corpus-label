@@ -674,6 +674,50 @@
 { retcode: "success" }
 ```
 
+###10.6 查询实体的引用
+
+* 请求方式
+
+``` get http://localhost:port/entity/reference```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+| entityName | `String` | 实体的名字 |
+
+
+* 响应
+```
+{
+    "retCode": "success",
+    "data": [
+        {
+            "para": "star",
+            "intent": "follow-level-3-3",
+            "zhName": "follow-level-3-3"
+        },
+        {
+            "para": "star",
+            "intent": "query-beautiful-1",
+            "zhName": "谁更美-1"
+        },
+        {
+            "para": "hot-star",
+            "intent": "follow-level-3-2",
+            "zhName": "测试"
+        },
+        {
+            "para": "star",
+            "intent": "follow-level-2",
+            "zhName": "follow-level-2"
+        }
+    ]
+}
+```
+
+
 ## 11.0 生成语料
 * 请求方式
 

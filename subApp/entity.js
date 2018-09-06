@@ -13,6 +13,11 @@ app.get("/", async function(req, res){
     res.send(entity);
 })
 
+app.get("/reference", async function(req, res){
+    var reference = await dbApi.getReferenceFor(req.query.agent, req.query.entityName)
+    res.send(reference)
+})
+
 //////////////////////////////////////////////////////////////////
 app.post("/", async function(req, res){
     var ret = await dbApi.addEntity(req.body.agent, req.body.entity)

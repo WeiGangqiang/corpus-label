@@ -116,6 +116,23 @@ async function updateEntity(agent, entity){
     return { retCode: "success" }
 }
 
+//////////////////////////////////////////////////////////////////
+async function getReferenceFor(agent, entityName){
+    const intentCollection = dbUtils.getIntentCollectionName(agent)
+    var queryAql = `FOR intent in ${intentCollection} 
+                        Let parameters = intent.parameters
+                        for para in parameters
+                            filter para.entity == '${entityName}'
+                            return {'para': para.name, 'intent': intent.name, 'zhName': intent.zhName}`
+    return await db.query(queryAql)
+    .then(cursor => cursor.all())
+    .then(reference => {
+        return restUtils.successRsp(reference)
+    },
+          err => {return restUtils.failRsp('get reference for error', err)}
+    )
+}
+
 
 module.exports = {
     getEntityNames,
@@ -123,5 +140,6 @@ module.exports = {
     addEntity,
     deleteEntity,
     updateEntity,
-    getEntitiesAll
+    getEntitiesAll,
+    getReferenceFor
 }
