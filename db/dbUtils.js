@@ -109,7 +109,6 @@ async function dropArrayAllItems(intent, fieldName){
         .then(cursor => cursor.all())
         .then(ret => console.info("drop arrays success, result is ", ret),
             err => console.error("drop arrays fail, log is ", err))
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ function getPatternField(type){
     return (type == "positive") ? "posPatterns" : "negPatterns"
 }
 
-
+//////////////////////////////////////////////////////////////////
 async function reUpdateArrayValues(intent, fieldName, operation){
     var arrays = await getArrayListFor(intent, fieldName)
     arrays = operation(arrays)

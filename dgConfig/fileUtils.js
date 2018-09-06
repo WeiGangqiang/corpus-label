@@ -39,7 +39,7 @@ function mkdirP(filePath) {
     })
 }
 
-
+//////////////////////////////////////////////////////////////////
 function deleteDir(path) {
 	var files = [];
 	if(fs.existsSync(path)) {

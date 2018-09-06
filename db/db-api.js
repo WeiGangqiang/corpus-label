@@ -155,7 +155,6 @@ function searchLabel(subSentence, startPos, intentPhrase, intentParas) {
         if (id != "") {
             return { type: "phrase", id, length: shift, startPos: startPos }
         }
-
         id = searchPara(term, intentParas)
         if(id != ""){
             return { type: "entity", id, length: shift, startPos: startPos }
@@ -218,7 +217,6 @@ function generateForPhrase(sentence, label, intentPhrase) {
         return sentence.slice(0, label.startPos) + value + sentence.slice(label.startPos + label.length)
     })
 }
-
 
 //////////////////////////////////////////////////////////////////
 function generateSentences(sentence, labels, intentPhrase, intentParas) {
@@ -295,7 +293,7 @@ function isMatchPhrase(sentence, label, phraseId, phrase){
 }
 
 //////////////////////////////////////////////////////////////////
-function doUpdatePatterns(patterns, phraseId, phrase){
+function doDeletePhraseLabelInPatterns(patterns, phraseId, phrase){
     return patterns.map(pattern =>{
         var newlabels = pattern.labels.filter((label)=>{
             return !isMatchPhrase(pattern.sentence, label, phraseId, phrase)
@@ -308,10 +306,10 @@ function doUpdatePatterns(patterns, phraseId, phrase){
 //////////////////////////////////////////////////////////////////
 async function updatePatterns(intent, pharseId, phrase){
     await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("positive"), (arrays) => {
-        return doUpdatePatterns(arrays, pharseId, phrase)
+        return doDeletePhraseLabelInPatterns(arrays, pharseId, phrase)
     })
     await dbUtils.reUpdateArrayValues(intent, dbUtils.getPatternField("negative"), (arrays) => {
-        return doUpdatePatterns(arrays, pharseId, phrase)
+        return doDeletePhraseLabelInPatterns(arrays, pharseId, phrase)
     })
     return { retCode: "success"}
 }

@@ -67,8 +67,7 @@ async function updateAgent(agent) {
     await collection.update(agent.agentId, agent).then(
         meta => { console.log('entity updated:', meta._key); return meta._key },
         err => { console.error('faild update entity:', err); return "" }
-    ); 
-    
+    );   
     return { retCode: "success" ,agentId: agent.agentId}
 }
 
