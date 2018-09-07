@@ -30,7 +30,6 @@ async function getArrayListFor(intent, fieldName) {
     const key = intent.intentId;
     const agent = intent.agent;
     const collectionName = getIntentCollectionName(agent);
-    console.log("db is", db)
     await db.query(`FOR doc in ${collectionName} FILTER doc._key== '${key}' RETURN doc.${fieldName}`)
         .then(cursor => cursor.all())
         .then(paras => ret = paras[0],

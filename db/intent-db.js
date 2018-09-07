@@ -130,15 +130,19 @@ function indexToLabel(index){
 //////////////////////////////////////////////////////////////////
 async function addParameter(intent, parameter){
     var intentInfo = await getIntent(intent.agent, intent.intentId)
-    let length = intentInfo.parameters.length
-    let para = {
-        name: parameter.name,
-        label: indexToLabel(length),
-        entity: parameter.entity,
-        isList: false
+    if( "name" in parameter && "entity" in parameter){
+        let length = intentInfo.parameters.length
+        let para = {
+            name: parameter.name,
+            label: indexToLabel(length),
+            entity: parameter.entity,
+            isList: false
+        }
+        await dbUtils.appendItemsToArray(intent, "parameters", para)
+        return { retCode: "success"}
+    }else{
+        return { reCode:  "fail"}
     }
-    await dbUtils.appendItemsToArray(intent, "parameters", para)
-    return { retCode: "success"}
 }
 
 //////////////////////////////////////////////////////////////////
