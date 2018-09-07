@@ -884,7 +884,6 @@
     "name": "who-you-are",
     "zhName": "你是谁",
     "modelPath": "users/corpus-test/who-you-are",
-    "parameters": []
 }
 }
 
@@ -913,6 +912,78 @@
 { retcode: "success" }
 ```
 
+
+###13.6 添加指定意图
+* 请求方式
+
+``` post http://localhost:port/intent/parameter```
+
+* 参数
+
+```
+{
+	"agent": "corpus-test",
+	"intentId": "14700686058075530",
+	"parameter": {
+		"name"  : "testadd",
+		"entity": "star"
+	}
+}
+```
+
+* 响应
+```
+{ retcode: "success" , intentId: "14700686055670147"}
+```
+
+
+###13.7 更新指定意图
+
+* 请求方式
+
+``` put http://localhost:port/intent/parameter```
+
+* 参数
+
+```
+{
+	"agent": "corpus-test",
+	"intentId": "14700686058075530",
+	"parameter": {
+		"name"  : "testadd",
+		"entity": "star",
+		"label" : "L0"
+	}
+}
+
+```
+
+* 响应
+```
+{ retcode: "success" }
+
+```
+
+###13.8 删除指定的意图
+* 请求方式
+
+``` delete http://localhost:port/intent/parameter```
+
+* 参数
+
+{
+	"agent": "corpus-test",
+	"intentId": "14700686058075530",
+	"parameter": {
+		"name"  : "testadd",
+		"entity": "star",
+		"label" : "L0"
+	}
+}
+* 响应
+```
+{ retcode: "success" }
+```
 
 ## 14.0 生成语料
 * 请求方式
