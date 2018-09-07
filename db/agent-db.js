@@ -95,7 +95,7 @@ async function addAgent(agent) {
         meta => { console.log('Document saved:', meta._key); return meta._key },
         err => { console.error('Failed to save document:', err); return "" }
     );
-    await createCollectionForAgent(agent.mame)
+    await createCollectionForAgent(agent.name)
     return { retCode: "success", agentId }
 }
 
