@@ -857,8 +857,7 @@
  "intent": {
     "name": "who-you-are",
     "zhName": "你是谁",
-    "modelPath": "users/corpus-test/who-you-are",
-    "parameters": []
+    "modelPath": "users/corpus-test/who-you-are"
     }
 }
 ```
@@ -913,7 +912,7 @@
 ```
 
 
-###13.6 添加指定意图
+###13.6 添加意图的参数
 * 请求方式
 
 ``` post http://localhost:port/intent/parameter```
@@ -937,7 +936,7 @@
 ```
 
 
-###13.7 更新指定意图
+###13.7 更新意图的参数
 
 * 请求方式
 
@@ -964,7 +963,7 @@
 
 ```
 
-###13.8 删除指定的意图
+###13.8 删除意图的参数
 * 请求方式
 
 ``` delete http://localhost:port/intent/parameter```
