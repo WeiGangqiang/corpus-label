@@ -71,6 +71,23 @@ async function updateAgent(agent) {
     return { retCode: "success" ,agentId: agent.agentId}
 }
 
+
+//////////////////////////////////////////////////////////////////
+async function createCollection(collectionName) {
+    var collection = db.collection(collectionName)
+    await collection.create().then(
+        () => console.log(`Collection ${collectionName} created`),
+        err => console.error('Failed to create collection:', err)
+    );
+}
+
+//////////////////////////////////////////////////////////////////
+async function createCollectionForAgent(agentName){
+    await createCollection(dbUtils.getIntentCollectionName(agentName))
+    await createCollection(dbUtils.getEntityCollectionName(agentName))
+    await createCollection(dbUtils.getPhraseCollectionName(agentName))
+}
+
 //////////////////////////////////////////////////////////////////
 async function addAgent(agent) {
     var collection = db.collection(agentCollectionName)
@@ -78,6 +95,7 @@ async function addAgent(agent) {
         meta => { console.log('Document saved:', meta._key); return meta._key },
         err => { console.error('Failed to save document:', err); return "" }
     );
+    await createCollectionForAgent(agentName)
     return { retCode: "success", agentId }
 }
 
