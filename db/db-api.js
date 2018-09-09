@@ -103,7 +103,7 @@ async function getPhraseFor(intent) {
 
 //////////////////////////////////////////////////////////////////
 async function updatePhraseFor(intent, phraseId, similars) {
-    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, itent.user)
+    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, intent.user)
     var collection = db.collection(collectionName)
     doc = {
         intentId: intent.intentId,
