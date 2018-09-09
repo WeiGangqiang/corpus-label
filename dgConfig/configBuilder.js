@@ -1,5 +1,6 @@
 var fileUtils = require('./fileUtils.js')
 var zipUtils = require('./zipUtils.js')
+var shellExecutor = require('./shellExecutor.js')
 const agentDb = require('../db/agent-db.js')
 const entityDb = require('../db/entity-db.js')
 const intentDb = require('../db/intent-db.js')
@@ -111,7 +112,8 @@ async function buildConfigs(agent) {
         await buildConfigForEntities(configPath,agent)
         await buildConfigForIntent(configPath, agent)
         await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
-        fileUtils.deleteDir(configPath)      
+        fileUtils.deleteDir(configPath) 
+        await shellExecutor.execute("./dgConfig/agentPublish.sh", [])
         return { retCode: "success" } 
     } catch (error) {
         console.error(' build configs error is', error)
