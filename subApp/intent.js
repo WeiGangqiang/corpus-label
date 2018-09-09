@@ -35,7 +35,7 @@ app.put("/", async function(req, res){
 })
 
 app.get("/actions", async function(req, res){
-    var ret = await dbApi.getIntentActions(req.query.agent, req.body.user, quereq.query.intentId)
+    var ret = await dbApi.getIntentActions(req.query.agent, req.query.user, quereq.query.intentId)
     res.send(ret)
 })
 
