@@ -14,6 +14,7 @@ app.get("/", async function(req, res){
 })
 
 app.get("/reference", async function(req, res){
+    console.log('session info ', req.session.user)
     var reference = await dbApi.getReferenceFor(req.query.agent, req.query.entityName)
     res.send(reference)
 })

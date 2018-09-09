@@ -1,6 +1,7 @@
 var express = require("express");
-var request = require('request');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 const dbApi = require('./db/db-api.js')
 const logDb = require("./db/log-api.js")
 const intentDb = require("./db/intent-db.js")
@@ -13,11 +14,37 @@ var utils = require('./subApp/utils.js')
 var intentApp = require('./subApp/intent.js')
 var entityApp = require('./subApp/entity.js')
 var agentApp = require('./subApp/agent.js')
+var userApp = require('./subApp/user.js')
 
 var cors = require('cors');  
 var app = express();
 app.use(cors())
 app.use(bodyParser.json());
+app.use(session({
+    secret:'12345',
+    cookie: {maxAge: 60000},
+    resave:false,
+    saveUninitialized:true
+}))
+
+
+app.use(async function(req, res, next){
+    console.log("receive request url:", req.url)
+    if(req.url.startsWith('/user/login')){
+        next()
+    }else{
+        if(req.session.user){
+            if(await userApp.isValidUser(req.session.user)){
+                next()
+            }else{
+                res.send({retCode: "fail", retText: "user check fail"})
+            }
+        }
+        else{
+            res.send({retCode: "fail", retText: "user not login"})
+        }
+    }
+})
 
 //////////////////////////////////////////////////////////////////
 app.get("/agents", async function(req, res){
@@ -42,6 +69,7 @@ app.use("/phrase", phrase.app)
 app.use("/intent", intentApp.app)
 app.use("/entity", entityApp.app)
 app.use("/agent", agentApp.app)
+app.use("/user", userApp.app)
 
 //////////////////////////////////////////////////////////////////
 app.post("/corpus", async function(req, res){
@@ -110,6 +138,7 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.send('error');
 });
+
 
 //////////////////////////////////////////////////////////////////
 var server = app.listen(config.runPort, function () {
