@@ -4,6 +4,7 @@ var shellExecutor = require('./shellExecutor.js')
 const agentDb = require('../db/agent-db.js')
 const entityDb = require('../db/entity-db.js')
 const intentDb = require('../db/intent-db.js')
+const postJson = require('../postjson.js');
 const uuid = require('node-uuid');
 var async = require('async');
 const tempPath = "temp/"
@@ -111,9 +112,12 @@ async function buildConfigs(agent) {
         await buildAgentConfig(configPath, agent)
         await buildConfigForEntities(configPath,agent)
         await buildConfigForIntent(configPath, agent)
-        await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
-        fileUtils.deleteDir(configPath) 
-        await shellExecutor.execute("./dgConfig/agentPublish.sh", [])
+        // await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
+        await shellExecutor.execute("./dgConfig/agentDeploy.sh", [configPath, agent])
+        console.log("send restart event for", agent)
+        var ret = await postJson(config.chatbotUrl, {agent,name:"restart"})
+        console.log('restart chatbot res', ret)
+        // fileUtils.deleteDir(configPath) 
         return { retCode: "success" } 
     } catch (error) {
         console.error(' build configs error is', error)
