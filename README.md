@@ -1,24 +1,5 @@
 # 语料标注
-## 1.0查询agent列表
-* 请求方式：
-
-```get http://localhost:port/agents```
-
-* 参数
-
-| Param | Type | Description |
-| --- | --- | --- |
-| host | `String` | 服务端IP地址 |
-
-* 响应
-```
-[
-    "course-record",
-    "question-answer"
-]
-```
-
-## 2.0查询agent未识别的话
+## 1.0查询agent未识别的话
 * 请求方式：
 
 ```get http://localhost:port/unknown-says```
@@ -41,37 +22,7 @@
 ]
 ```
 
-## 3.0 查询intent列表
-* 请求方式：
-
-```get http://localhost:port/intents```
-
-* 参数
-
-| Param | Type | Description |
-| --- | --- | --- |
-| agent | `String` | agent的名字（course-record） |
-
-* 响应
-
-```
-[
-    {
-        "intentId": "14700686044264578",
-        "name": "record-course",
-        "zhName": "录课程",
-        "modelPath": "users/course-record/record-course"
-    },
-    {
-        "intentId": "14700686044264535",
-        "name": "query-exsited-books",
-        "zhName": "查询其他时间",
-        "modelPath": "users/course-record/query-specifed-book:query-exsited-books"
-    }
-]
-```
-
-## 4.0 查询intent parameter列表
+## 2.0 查询intent parameter列表
 * 请求方式
 
 ``` get http://localhost:port/parameters```
@@ -81,6 +32,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
+| user  | `String` | 用户的名字（ darwin） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 
 * 响应
@@ -122,7 +74,7 @@
 ]
 
 ```
-## 5.0 查询简化模型
+## 3.0 查询简化模型
 * 请求方式
 ``` post http://localhost:port/simplifier```
 * 参数
@@ -141,9 +93,9 @@
 
 ```
 
-## 6.0 语料规则
+## 4.0 语料规则
 
-### 6.1 查询语料规则
+### 4.1 查询语料规则
 * 请求方式
 
 ``` get http://localhost:port/pattern```
@@ -154,6 +106,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
+| user  | `String` | 用户的名字（ darwin） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 | type | `String` | positive(正样本), negative(负样本) |
 
@@ -182,7 +135,7 @@
 ```
 
 
-### 6.2 添加语料规则
+### 4.2 添加语料规则
 * 请求方式
 
 ``` post http://localhost:port/pattern```
@@ -210,6 +163,7 @@
   "type"     : "positive", #"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -219,7 +173,7 @@
 { retcode: "success"}
 ```
 
-### 6.3 更新语料规则
+### 4.3 更新语料规则
 * 请求方式
 
 ``` put http://localhost:port/pattern```
@@ -248,6 +202,7 @@
   "patternId": 2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -258,7 +213,7 @@
 
 ```
 
-### 6.4 删除语料规则
+### 4.4 删除语料规则
 * 请求方式
 
 ``` delete http://localhost:port/pattern```
@@ -271,6 +226,7 @@
   "type"     : "positive",#"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -281,8 +237,8 @@
 
 ```
 
-##7.0 近义词
-### 7.1 查询近义词
+##5.0 近义词
+### 5.1 查询近义词
 * 请求方式
 
 ``` get http://localhost:port/phrase```
@@ -293,6 +249,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
+| user  | `String` | 用户名（ user）               |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 
 
@@ -312,7 +269,7 @@
 ```
 
 
-### 7.2 添加近义词
+### 5.2 添加近义词
 * 请求方式
 
 ``` post http://localhost:port/phrase```
@@ -324,6 +281,7 @@
   "similars" : ["美丽", "漂亮"],
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -337,7 +295,7 @@
 
 ```
 
-### 7.3 更新近义词
+### 5.3 更新近义词
 * 请求方式
 
 ``` put http://localhost:port/phrase```
@@ -350,6 +308,7 @@
   "phraseId"  : "14700686050982298",
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -360,7 +319,7 @@
 
 ```
 
-### 7.4 删除近义词
+### 5.4 删除近义词
 * 请求方式
 
 ``` delete http://localhost:port/phrase```
@@ -372,6 +331,7 @@
   "phraseId"    : "14700686050982298"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -381,7 +341,7 @@
 { retcode: "success"}
 
 ```
-## 8.0 标注预测
+## 6.0 标注预测
 * 请求方式
 
 ``` post http://localhost:8000/label/predict```
@@ -392,6 +352,7 @@
 {
   "sentence" : "我刘亦菲你喜欢吗",
   "intentId" : "14700686050928383",
+  "user"     : "darwin",
   "agent"    : "corpus-test"
 }
 ```
@@ -414,15 +375,17 @@
 ]
 
 ```
-## 9.0 agent 
-### 9.1 查询agentList
+## 7.0 agent 
+### 7.1 查询agentList
 * 请求方式
 
 ``` get http://localhost:port/agent/all```
 
 * 参数
 
-无
+| Param | Type | Description |
+| --- | --- | --- |
+| user | `String` | 用户名(darwin)) |
 
 * 响应
 ```
@@ -446,7 +409,7 @@
 ]
 ```
 
-###9.2 查询指定agent
+###7.2 查询指定agent
 
 * 请求方式
 
@@ -472,7 +435,7 @@
 }
 ```
 
-###9.3 添加指定agent
+###7.3 添加指定agent
 * 请求方式
 
 ``` post http://localhost:port/agent```
@@ -482,6 +445,7 @@
 ```
 {
 	"name":"course-record",
+    "user": "darwin",
 	"gateWay":"http://localhost:7070/api",
 	"introduced": "我可以帮你记住您的课表哦，每天早上记得问我哦",
 	"shareAgents": [],
@@ -489,14 +453,13 @@
 }
 ```
 
-
 * 响应
 ```
 { retcode: "success" , agentId: "14700686055670147"}
 ```
 
 
-###9.4 更新指定agent
+###7.4 更新指定agent
 
 * 请求方式
 
@@ -508,6 +471,7 @@
 {
     "agentId": "14700686055670147",
 	"name":"course-record",
+	"name":"user",
 	"gateWay":"http://localhost:7070/api",
 	"introduced": "我可以帮你记住您的课表哦，每天早上记得问我哦",
 	"shareAgents": [],
@@ -521,7 +485,7 @@
 
 ```
 
-###9.5 删除指定的agent
+###7.5 删除指定的agent
 * 请求方式
 
 ``` delete http://localhost:port/agent```
@@ -531,6 +495,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agentId | `String` | agentId |
+| user    | `String` | 用户名(darwin)) |
 
 * 响应
 ```
@@ -538,7 +503,7 @@
 ```
 
 
-###9.6 打包指定的agent
+###7.6 打包指定的agent
 * 请求方式
 
 ``` delete http://localhost:port/agent/pack```
@@ -549,6 +514,7 @@
 | --- | --- | --- |
 | agentId | `String` | agentId |
 | agent | `String` | 名字 |
+| user | `String` | 用户名(darwin)) |
 
 * 响应
 ```
@@ -560,8 +526,8 @@
 
 
 
-##10.0 实体
-### 10.1 查询实体列表
+##8.0 实体
+### 8.1 查询实体列表
 * 请求方式
 
 ``` get http://localhost:port/entity/names```
@@ -571,6 +537,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` | 用户名(darwin)) |
 
 * 响应
 ```
@@ -583,7 +550,7 @@
 
 ```
 
-###10.2 查询指定实体
+###8.2 查询指定实体
 
 * 请求方式
 
@@ -594,6 +561,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` | 用户名(darwin)) |
 | entityName | `String` | 实体的名字 |
 
 
@@ -609,7 +577,7 @@
 }
 ```
 
-###10.3 添加指定实体
+###8.3 添加指定实体
 * 请求方式
 
 ``` post http://localhost:port/entity```
@@ -619,6 +587,7 @@
 ```
 {
 	"agent":"corpus-test",
+    "user" : "darwin",
 	"entity": {
 		"name": "size",
 		"items": ["4尺, 四尺", "5尺, 五️尺"]
@@ -632,7 +601,7 @@
 ```
 
 
-###10.4 更新指定实体
+###8.4 更新指定实体
 
 * 请求方式
 
@@ -643,6 +612,7 @@
 ```
 {
 	"agent":"corpus-test",
+    "user" : "darwin",  
 	"entity": {
 		"name": "clever",
 		"entityId":"14700686055675270",
@@ -657,7 +627,7 @@
 
 ```
 
-###10.5 删除指定的实体
+###8.5 删除指定的实体
 * 请求方式
 
 ``` delete http://localhost:port/entity```
@@ -667,6 +637,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字 |
+| user | `String` | 用户名(darwin) |
 | entityId | `String` | 实体的ID |
 
 * 响应
@@ -674,7 +645,7 @@
 { retcode: "success" }
 ```
 
-###10.6 查询实体的引用
+###8.6 查询实体的引用
 
 * 请求方式
 
@@ -685,6 +656,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` | 用户名(darwin) |
 | entityName | `String` | 实体的名字 |
 
 
@@ -718,7 +690,7 @@
 ```
 
 
-## 11.0 生成语料
+## 9.0 生成语料
 * 请求方式
 
 ``` post http://localhost:port/generate```
@@ -744,7 +716,9 @@
     }]
   },
   "intentId" : "14700686050928383",
+  "user" : "darwin",
   "agent"    : "corpus-test"
+
 }
 ```
 
@@ -764,7 +738,7 @@
 
 ```
 
-## 12.0 添加语料
+## 10.0 添加语料
 * 请求方式
 
 ``` post http://localhost:port/corpus```
@@ -776,7 +750,8 @@
  "sentence": "帮我查查[礼拜日]/L0 的课表",
  "accept"  : true,
  "intentId": "14700686044264578",
- "intent"  :  "record-course"
+ "agent"  :  "record-course"
+ "user"  :  "darwin"
 }
 ```
 
@@ -788,8 +763,8 @@
 
 
 
-##13.0 实体
-### 13.1 查询意图列表
+##11.0 实体
+### 11.1 查询意图列表
 * 请求方式
 
 ``` get http://localhost:port/intent/all```
@@ -799,6 +774,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` | 用户名(darwin) |
 
 * 响应
 ```
@@ -820,7 +796,7 @@
 ]
 ```
 
-###13.2 查询指定意图
+###11.2 查询指定意图
 
 * 请求方式
 
@@ -831,6 +807,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` |  用户名(darwin) |
 | intentId | `String` | 意图的ID |
 
 
@@ -845,7 +822,7 @@
 }
 ```
 
-###13.3 添加指定意图
+###11.3 添加指定意图
 * 请求方式
 
 ``` post http://localhost:port/intent```
@@ -853,7 +830,8 @@
 * 参数
 
 ```
-{"agent": "corpus-test"
+{"agent": "corpus-test",
+ "user" : "darwin",
  "intent": {
     "name": "who-you-are",
     "zhName": "你是谁",
@@ -868,7 +846,7 @@
 ```
 
 
-###13.4 更新指定意图
+###11.4 更新指定意图
 
 * 请求方式
 
@@ -877,7 +855,8 @@
 * 参数
 
 ```
-{"agent": "corpus-test"
+{"agent": "corpus-test",
+ "user" : "darwin",
  "intent" :{
     "intentId": "14700686055670147"
     "name": "who-you-are",
@@ -894,7 +873,7 @@
 
 ```
 
-###13.5 删除指定的意图
+###11.5 删除指定的意图
 * 请求方式
 
 ``` delete http://localhost:port/intent```
@@ -904,6 +883,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字 |
+| user | `String` | 用户名(darwin)) |
 | intentId | `String` | 意图的ID |
 
 * 响应
@@ -912,7 +892,7 @@
 ```
 
 
-###13.6 添加意图的参数
+###11.6 添加意图的参数
 * 请求方式
 
 ``` post http://localhost:port/intent/parameter```
@@ -922,6 +902,7 @@
 ```
 {
 	"agent": "corpus-test",
+    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -936,7 +917,7 @@
 ```
 
 
-###13.7 更新意图的参数
+###11.7 更新意图的参数
 
 * 请求方式
 
@@ -947,6 +928,7 @@
 ```
 {
 	"agent": "corpus-test",
+    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -963,7 +945,7 @@
 
 ```
 
-###13.8 删除意图的参数
+###11.8 删除意图的参数
 * 请求方式
 
 ``` delete http://localhost:port/intent/parameter```
@@ -972,6 +954,7 @@
 
 {
 	"agent": "corpus-test",
+    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -984,7 +967,7 @@
 { retcode: "success" }
 ```
 
-## 14.0 生成语料
+## 11.0 生成语料
 * 请求方式
 
 ``` post http://localhost:port/remote-dg```
@@ -993,7 +976,8 @@
 
 ```
 {
- "agent":   "corpus-test"
+ "agent":   "corpus-test",
+ "user" : "darwin",
  "modelPath"  :  "users/corpus-test/who-you-are"
 }
 ```
@@ -1005,8 +989,8 @@
 ```
 
 
-## 15.0 动作
-###15.1 查询动作
+## 12.0 动作
+###12.1 查询动作
 
 * 请求方式
 
@@ -1017,6 +1001,7 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
+| user | `String` | 用户名(darwin) |
 | intentId | `String` | 意图的ID |
 
 
@@ -1036,7 +1021,7 @@
 }
 ```
 
-###15.2 更新动作
+###12.2 更新动作
 * 请求方式
 
 ``` post http://localhost:port/intent/actions```
@@ -1044,9 +1029,11 @@
 * 参数
 
 ```
-{"agent":"corpus-test",
-"intentId": "14700686058075550",
-"actions": [{"type": "replies", "values": ["你是谁", "我爱你"] }] 
+{
+    "agent":"corpus-test",
+    "user" : "darwin",
+    "intentId": "14700686058075550",
+    "actions": [{"type": "replies", "values": ["你是谁", "我爱你"] }] 
 }
 ```
 
