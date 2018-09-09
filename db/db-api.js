@@ -5,9 +5,9 @@ var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
-async function getEntityValuesFor(agent, entityName) {
+async function getEntityValuesFor(agent, user, entityName) {
     var ret = []
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     console.log('get collection name', collectionName, entityName)
     await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
@@ -35,7 +35,7 @@ async function getParasFor(intent) {
         var entityNames = para.entity.split(".")
         var entityAgent = (entityNames.length > 1) ? entityNames[0] : intent.agent
         var entityName = (entityNames.length > 1) ? entityNames[1] : entityNames[0]
-        var entityInfo = await getEntityValuesFor(entityAgent, entityName)
+        var entityInfo = await getEntityValuesFor(entityAgent, intent.user, entityName)
         console.log('entityInfo',entityInfo)
         parameters[i].values = entityInfo.values
         parameters[i].choices = entityInfo.choices
@@ -72,7 +72,7 @@ async function updatePatternFor(intent, index, value, type) {
 
 //////////////////////////////////////////////////////////////////
 async function addPhraseFor(intent, similars) {
-    var collectionName = dbUtils.getPhraseCollectionName(intent.agent)
+    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, intent.user)
     var collection = db.collection(collectionName)
     doc = {
         intentId: intent.intentId,
@@ -88,7 +88,7 @@ async function addPhraseFor(intent, similars) {
 
 //////////////////////////////////////////////////////////////////
 async function getPhraseFor(intent) {
-    var collectionName = dbUtils.getPhraseCollectionName(intent.agent)
+    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, intent.user)
     var ret = []
     await db.query(`FOR doc in ${collectionName} FILTER doc.intentId== '${intent.intentId}' RETURN doc`)
         .then(cursor => cursor.all())
@@ -103,7 +103,7 @@ async function getPhraseFor(intent) {
 
 //////////////////////////////////////////////////////////////////
 async function updatePhraseFor(intent, phraseId, similars) {
-    var collectionName = dbUtils.getPhraseCollectionName(intent.agent)
+    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, itent.user)
     var collection = db.collection(collectionName)
     doc = {
         intentId: intent.intentId,
@@ -118,7 +118,7 @@ async function updatePhraseFor(intent, phraseId, similars) {
 
 //////////////////////////////////////////////////////////////////
 async function deletePhraseFor(intent, phraseId) {
-    var collectionName = dbUtils.getPhraseCollectionName(intent.agent)
+    var collectionName = dbUtils.getPhraseCollectionName(intent.agent, intent.user)
     var collection = db.collection(collectionName)
 
     await collection.remove(phraseId).then(

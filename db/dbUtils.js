@@ -3,18 +3,21 @@ var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
-function getIntentCollectionName(agent) {
-    return agent.replace("-", "_") + "_intent"
+function getIntentCollectionName(agent, user) {
+    return agent.replace("-", "_") + "_" + user + "_intent"
 }
 
 //////////////////////////////////////////////////////////////////
-function getEntityCollectionName(agent) {
-    return agent.replace("-", "_") + "_entity"
+function getEntityCollectionName(agent, user) {
+    if(agent == "sys"){
+        return "sys_entity"
+    }
+    return agent.replace("-", "_") + "_" + user + "_entity"
 }
 
 //////////////////////////////////////////////////////////////////
-function getPhraseCollectionName(agent) {
-    return agent.replace("-", "_") + "_phrase"
+function getPhraseCollectionName(agent, user) {
+    return agent.replace("-", "_") + "_" + user + "_phrase"
 }
 
 //////////////////////////////////////////////////////////////////
@@ -29,7 +32,8 @@ async function getArrayListFor(intent, fieldName) {
     console.log(`get array for agent ${intent.agent} intent id ${intent.intentId}, fieldName ${fieldName}`)
     const key = intent.intentId;
     const agent = intent.agent;
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user;
+    const collectionName = getIntentCollectionName(agent, user);
     await db.query(`FOR doc in ${collectionName} FILTER doc._key== '${key}' RETURN doc.${fieldName}`)
         .then(cursor => cursor.all())
         .then(paras => ret = paras[0],
@@ -41,7 +45,8 @@ async function getArrayListFor(intent, fieldName) {
 async function addToArrayTo(intent, fieldName, value) {
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}:APPEND(doc.${fieldName}, ${JSON.stringify(value)}, true)
@@ -61,7 +66,8 @@ async function addToArrayTo(intent, fieldName, value) {
 async function updateToArrayTo(intent, fieldName, values) {
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}: ${JSON.stringify(values)}
@@ -79,7 +85,8 @@ async function updateToArrayTo(intent, fieldName, values) {
 async function removeFromArray(intent, fieldName, index) {
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}:REMOVE_NTH(doc.${fieldName},${index})
@@ -99,7 +106,8 @@ async function removeFromArray(intent, fieldName, index) {
 async function dropArrayAllItems(intent, fieldName){
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}:[]
@@ -114,7 +122,8 @@ async function dropArrayAllItems(intent, fieldName){
 async function appendItemsToArray(intent, fieldName, values){
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}:APPEND(doc.${fieldName}, ${JSON.stringify(values)})
@@ -131,7 +140,8 @@ async function appendItemsToArray(intent, fieldName, values){
 async function updateArrayItem(intent, fieldName, index, value) {
     const agent = intent.agent
     const intentId = intent.intentId
-    const collectionName = getIntentCollectionName(agent);
+    const user = intent.user
+    const collectionName = getIntentCollectionName(agent, user);
     const aql = `LET doc = DOCUMENT( "${collectionName}/${intentId}")
                  UPDATE doc WITH {
                     ${fieldName}:UNION(SLICE(doc.${fieldName},0,${index}), [${JSON.stringify(value)}], SLICE(doc.${fieldName}, ${index + 1}))

@@ -2,6 +2,7 @@
 function getIntentFromReqBody(req){
     var intent = {}
     intent.agent = req.body.agent
+    intent.user = req.body.user
     intent.intentId = req.body.intentId
     console.log("receive req msg", req.body)
     return intent
@@ -11,6 +12,7 @@ function getIntentFromReqBody(req){
 function getIntentFromReqQuery(req){
     var intent = {}
     intent.agent = req.query.agent
+    intent.user  = req.query.user
     intent.intentId = req.query.intentId
     console.log("receive req msg", req.query)
     return intent

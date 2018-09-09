@@ -9,8 +9,8 @@ function formatIntent(intent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function getIntentsFor(agent) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function getIntentsFor(agent, user) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var ret = await db.query(`FOR doc IN ${collectionName} return doc `).then(cursor => cursor.all())
         .then(intents => intents.map( intent => {return formatIntent(intent)}),
               err => { console.error("error log", err); return []})
@@ -18,8 +18,8 @@ async function getIntentsFor(agent) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function getIntentsForServer(agent){
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function getIntentsForServer(agent, user){
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var ret = await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
     .then(intents => intents.map( intent => {return formatIntent(intent)}),
     err => { console.error("error log", err); return []})
@@ -27,8 +27,8 @@ async function getIntentsForServer(agent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function getIntent(agent, intentId) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function getIntent(agent, user, intentId) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var collection = db.collection(collectionName)
     console.log('find intent by id', intentId)
     return await collection.document(intentId).then(
@@ -37,8 +37,8 @@ async function getIntent(agent, intentId) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function getIntentActions(agent, intentId){
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function getIntentActions(agent, user,intentId){
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var collection = db.collection(collectionName)
     console.log('find intent by id', intentId)
     return await collection.document(intentId).then(
@@ -48,8 +48,8 @@ async function getIntentActions(agent, intentId){
 }
 
 //////////////////////////////////////////////////////////////////
-async function updateIntentActions(agent, intentId, actions){
-    return await dbUtils.updateToArrayTo({agent, intentId}, "actions", actions)
+async function updateIntentActions(agent, user, intentId, actions){
+    return await dbUtils.updateToArrayTo({agent, user,intentId}, "actions", actions)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -72,8 +72,8 @@ function buildIntentDocBy(agentName, intent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function addIntent(agent, intent) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function addIntent(agent, user, intent) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var collection = db.collection(collectionName)
     var doc = buildIntentDocBy(agent, intent)
     var intentId = await collection.save(doc).then(
@@ -84,8 +84,8 @@ async function addIntent(agent, intent) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function deleteIntent(agent, intentId) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function deleteIntent(agent, user, intentId) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var collection = db.collection(collectionName)
     await collection.remove(intentId).then(
         () => console.log('entity doc removed'),
@@ -106,8 +106,8 @@ function buildIntentBaseDocBy(intent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function updateIntent(agent, intent) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function updateIntent(agent, user, intent) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var collection = db.collection(collectionName)
     var doc = buildIntentBaseDocBy(intent)
     await collection.update(intent.intentId, doc).then(
@@ -129,7 +129,7 @@ function indexToLabel(index){
 
 //////////////////////////////////////////////////////////////////
 async function addParameter(intent, parameter){
-    var intentInfo = await getIntent(intent.agent, intent.intentId)
+    var intentInfo = await getIntent(intent.agent, intent.user, intent.intentId)
     if( "name" in parameter && "entity" in parameter){
         let length = intentInfo.parameters.length
         let para = {
@@ -192,7 +192,7 @@ async function renamePatternLabel(intent, old_labelId, new_labelId){
 
 //////////////////////////////////////////////////////////////////
 async function getParameterAll(intent){
-    var intentInfo = await getIntent(intent.agent, intent.intentId)
+    var intentInfo = await getIntent(intent.agent, intent.user, intent.intentId)
     return intentInfo.parameters
 }
 

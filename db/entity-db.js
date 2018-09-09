@@ -4,9 +4,9 @@ var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
-async function getEntityNames(agent){
+async function getEntityNames(agent, user){
     var ret = []
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     await db.query(`FOR doc in ${collectionName} RETURN doc.name`)
     .then(cursor => cursor.all())
     .then(names => ret = names,
@@ -16,9 +16,9 @@ async function getEntityNames(agent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function getEntitiesAll(agent) {
+async function getEntitiesAll(agent, user) {
     var ret = []
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     await db.query(`FOR doc in ${collectionName} FILTER doc.items != NULL  RETURN doc`)
         .then(cursor => cursor.all())
         .then(entities => ret = entities,
@@ -41,9 +41,9 @@ function formatEntity(doc){
 }
 
 //////////////////////////////////////////////////////////////////
-async function getEntity(agent, entityName) {
+async function getEntity(agent, user, entityName) {
     var ret = {}
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     return await db.query(`FOR doc in ${collectionName} FILTER doc.name == '${entityName}' RETURN doc`)
         .then(cursor => cursor.all())
         .then(entities => { return formatEntity(entities[0])},
@@ -72,8 +72,8 @@ function buildDocBy(entity){
 }
 
 //////////////////////////////////////////////////////////////////
-async function addEntity(agent, entity) {
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+async function addEntity(agent, user, entity) {
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     var collection = db.collection(collectionName)
     var doc = buildDocBy(entity)
     var entityId = await collection.save(doc).then(
@@ -84,8 +84,8 @@ async function addEntity(agent, entity) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function deleteEntity(agent, entityId) {
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+async function deleteEntity(agent, user, entityId) {
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     var collection = db.collection(collectionName)
     await collection.remove(entityId).then(
         () => console.log('entity doc removed'),
@@ -105,8 +105,8 @@ async function getEntityId(collectionName, entityName){
 }
 
 //////////////////////////////////////////////////////////////////
-async function updateEntity(agent, entity){
-    const collectionName = dbUtils.getEntityCollectionName(agent);
+async function updateEntity(agent, user, entity){
+    const collectionName = dbUtils.getEntityCollectionName(agent, user);
     var collection = db.collection(collectionName)
     var doc = buildDocBy(entity)
     await collection.update(entity.entityId, doc).then(
@@ -117,8 +117,8 @@ async function updateEntity(agent, entity){
 }
 
 //////////////////////////////////////////////////////////////////
-async function getReferenceFor(agent, entityName){
-    const intentCollection = dbUtils.getIntentCollectionName(agent)
+async function getReferenceFor(agent, user, entityName){
+    const intentCollection = dbUtils.getIntentCollectionName(agent, user)
     var queryAql = `FOR intent in ${intentCollection} 
                         Let parameters = intent.parameters
                         for para in parameters

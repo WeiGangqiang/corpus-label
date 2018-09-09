@@ -4,7 +4,6 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 const dbApi = require('./db/db-api.js')
 const logDb = require("./db/log-api.js")
-const intentDb = require("./db/intent-db.js")
 const postJson = require('./postjson.js');
 var config = require('./config.js');
 var slot = require('./subApp/slot.js')
@@ -30,37 +29,22 @@ app.use(session({
 
 app.use(async function(req, res, next){
     console.log("receive request url:", req.url)
-    if(req.url.startsWith('/user/login')){
-        next()
-    }else{
-        if(req.session.user){
-            if(await userApp.isValidUser(req.session.user)){
-                next()
-            }else{
-                res.send({retCode: "fail", retText: "user check fail"})
-            }
-        }
-        else{
-            res.send({retCode: "fail", retText: "user not login"})
-        }
-    }
+    next()
+    // if(req.url.startsWith('/user/login')){
+    //     next()
+    // }else{
+    //     if(req.session.user){
+    //         if(await userApp.isValidUser(req.session.user)){
+    //             next()
+    //         }else{
+    //             res.send({retCode: "fail", retText: "user check fail"})
+    //         }
+    //     }
+    //     else{
+    //         res.send({retCode: "fail", retText: "user not login"})
+    //     }
+    // }
 })
-
-//////////////////////////////////////////////////////////////////
-app.get("/agents", async function(req, res){
-    const host = req.query.host;
-    console.log("receive query agents para:", host)
-    res.send(["corpus-test", "course-record", "question-answer", "survey-creator", "westore", "survey-bot"])
-})
-
-//////////////////////////////////////////////////////////////////
-app.get("/intents",async function(req, res){
-    const agent= req.query.agent;
-    console.log("receive req msg", agent);
-    var intents = await intentDb.getIntentsFor(agent);
-    console.log("intents is", intents)
-    res.send(intents);
-});
 
 //////////////////////////////////////////////////////////////////
 app.use("/parameters", slot.app)
