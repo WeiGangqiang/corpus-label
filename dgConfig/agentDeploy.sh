@@ -1,7 +1,7 @@
 #！/bin/bash 
-tempCfgPath=%1
-user=%2
-agentName=%3
+tempCfgPath=$1
+user=$2
+agentName=$3
 echo "begin publish for $user $agentName ..."
 cd ../
 
