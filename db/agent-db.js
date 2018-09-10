@@ -49,6 +49,7 @@ async function getAgentByName(user, agentName) {
     await db.query(`FOR doc IN ${agentCollectionName} filter doc.user=='${user}' and doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
     .then(agents => {
         if(agents){
+            console.log("agents is", agents)
             ret = formatAgent(agents[0])
         }},
         err => console.error("error log", err))
