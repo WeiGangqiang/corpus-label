@@ -13,7 +13,7 @@ app.get("/all", async function(req, res){
     res.send(agents)
 })
 
-app.post("/pack", async function(req, res){
+app.post("/publish", async function(req, res){
     var ret = await builder.buildConfigs(req.query.agent, req.session.user.name)
     res.send(ret)
 })

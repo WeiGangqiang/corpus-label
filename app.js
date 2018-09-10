@@ -118,9 +118,6 @@ app.post("/pattern/sync", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
-app.use("/package", express.static("static"))
-
-//////////////////////////////////////////////////////////////////
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
