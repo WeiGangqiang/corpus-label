@@ -9,12 +9,12 @@ app.get("/", async function(req, res){
 })
 
 app.get("/all", async function(req, res){
-    var agents = await dbApi.getAgentsAll(req.query.user)
+    var agents = await dbApi.getAgentsAll(req.session.user.name)
     res.send(agents)
 })
 
 app.post("/pack", async function(req, res){
-    var ret = await builder.buildConfigs(req.query.agent, req.query.user)
+    var ret = await builder.buildConfigs(req.query.agent, req.session.user.name)
     res.send(ret)
 })
 

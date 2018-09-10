@@ -5,42 +5,42 @@ var app = express();
 
 app.get("/all", async function(req, res){
     const agent= req.query.agent;
-    const user= req.query.user;
+    const user= req.session.user.name;
     var intents = await dbApi.getIntentsFor(agent, user);
     console.log("intents is", intents)
     res.send(intents);
 })
 
 app.get("/", async function(req, res){
-    var intent = await dbApi.getIntent(req.query.agent, req.query.user, req.query.intentId);
+    var intent = await dbApi.getIntent(req.query.agent, req.session.user.name, req.query.intentId);
     res.send(intent);
 })
 
 //////////////////////////////////////////////////////////////////
 app.post("/", async function(req, res){
-    var ret = await dbApi.addIntent(req.body.agent, req.body.user, req.body.intent)
+    var ret = await dbApi.addIntent(req.body.agent, req.session.user.name, req.body.intent)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
 app.delete("/", async function(req, res){
-    var ret = await dbApi.deleteIntent(req.query.agent, req.query.user, req.query.intentId)
+    var ret = await dbApi.deleteIntent(req.query.agent, req.session.user.name, req.query.intentId)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
 app.put("/", async function(req, res){
-    var ret = await dbApi.updateIntent(req.body.agent, req.body.user, req.body.intent)
+    var ret = await dbApi.updateIntent(req.body.agent, req.session.user.name, req.body.intent)
     res.send(ret)
 })
 
 app.get("/actions", async function(req, res){
-    var ret = await dbApi.getIntentActions(req.query.agent, req.query.user, req.query.intentId)
+    var ret = await dbApi.getIntentActions(req.query.agent, req.session.user.name, req.query.intentId)
     res.send(ret)
 })
 
 app.post("/actions", async function(req, res){
-    var ret = await dbApi.updateIntentActions(req.body.agent, req.body.user, req.body.intentId, req.body.actions)
+    var ret = await dbApi.updateIntentActions(req.body.agent, req.session.user.name, req.body.intentId, req.body.actions)
     res.send(ret)
 })
 

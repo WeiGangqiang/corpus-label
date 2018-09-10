@@ -26,13 +26,21 @@ const corsOption = {
 }
 app.use(cors(corsOption))
 app.use(bodyParser.json());
-app.use(session({
-    secret:'12345',
-    cookie: {maxAge: 60000},
-    resave:false,
-    saveUninitialized:true
-}))
 
+app.use(session({
+    secret :  'secret', // 对session id 相关的cookie 进行签名
+    resave : true,
+    saveUninitialized: false, // 是否保存未初始化的会话
+    cookie : {
+        maxAge : 1000 * 60 * 3, // 设置 session 的有效时间，单位毫秒
+    },
+}));
+
+app.use(function(req, res, next){
+    req.session._garbage = Date();
+    req.session.touch();
+    next();
+});
 
 app.use(async function(req, res, next){
     console.log("receive request url:", req.url)
