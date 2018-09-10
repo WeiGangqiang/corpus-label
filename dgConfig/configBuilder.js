@@ -79,6 +79,7 @@ async function doBuildIntentConfig(intentPath, intent){
     var intentYaml = {}
     intentYaml["intent"] = intent.name
     intentYaml["zh-name"] = intent.zhName
+    intentYaml["mode"] = "server"
     var paths = intent.modelPath.split("/").slice(3)
     if(paths.length > 1){
         intentYaml["in-contexts"] = [paths.slice(0,-1).join(".")]
