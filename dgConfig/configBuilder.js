@@ -5,6 +5,7 @@ const agentDb = require('../db/agent-db.js')
 const entityDb = require('../db/entity-db.js')
 const intentDb = require('../db/intent-db.js')
 const postJson = require('../postjson.js');
+var config = require('../config.js');
 const uuid = require('node-uuid');
 var async = require('async');
 const tempPath = "temp/"
@@ -78,7 +79,7 @@ async function doBuildIntentConfig(intentPath, intent){
     var intentYaml = {}
     intentYaml["intent"] = intent.name
     intentYaml["zh-name"] = intent.zhName
-    var paths = intent.modelPath.split("/").slice(2)
+    var paths = intent.modelPath.split("/").slice(3)
     if(paths.length > 1){
         intentYaml["in-contexts"] = [paths.slice(0,-1).join(".")]
     }
@@ -86,7 +87,7 @@ async function doBuildIntentConfig(intentPath, intent){
     if(intent.parameters.length > 0){
         intentYaml["parameters"] = doBuildIntentParameters(intent.parameters)
     }
-    intentYaml["user-says"] = []
+    intentYaml["user-says"] = null
     intentYaml["replies"] = ["我是小哒"]
     console.log('build itent is', intentYaml)
     await fileUtils.writeYaml(intentPath + "/" + intent.name + ".yaml", intentYaml)
