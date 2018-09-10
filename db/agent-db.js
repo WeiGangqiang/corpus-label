@@ -38,16 +38,15 @@ function formatAgent(doc){
 //////////////////////////////////////////////////////////////////
 async function getAgent(agentId) {
     var collection = db.collection(agentCollectionName)
-    console.log('agentId', agentId)
     return await collection.document(agentId).then(
         doc => { return formatAgent(doc) },
         err => { return restUtils.failRsp('Failed to fetch agent document:', err)});
 }
 
 //////////////////////////////////////////////////////////////////
-async function getAgentByName(agentName) {
+async function getAgentByName(user, agentName) {
     var ret= {}
-    await db.query(`FOR doc IN ${agentCollectionName} filter doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
+    await db.query(`FOR doc IN ${agentCollectionName} filter doc.user=='${user}' and doc.name=='${agentName}' return doc `).then(cursor => cursor.all())
     .then(agents => {
         if(agents){
             ret = formatAgent(agents[0])

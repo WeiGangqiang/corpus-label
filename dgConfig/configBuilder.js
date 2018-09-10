@@ -37,8 +37,8 @@ async function createAgentConfigPaths(configPath, agent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function buildAgentConfig(configPath, agentName){
-    var agent = await agentDb.getAgentByName(agentName)
+async function buildAgentConfig(configPath, user, agentName){
+    var agent = await agentDb.getAgentByName(user,agentName)
     console.log('agent is', agent)
     await fileUtils.writeYaml(configPath + "/" + agentName + ".yaml", agent)
 }
@@ -52,8 +52,8 @@ async function doBuildEntityConfig(entityPath, entity){
 }
 
 //////////////////////////////////////////////////////////////////
-async function buildConfigForEntities(configPath, agentName){
-    var entities = await entityDb.getEntitiesAll(agentName)
+async function buildConfigForEntities(configPath, user, agentName){
+    var entities = await entityDb.getEntitiesAll(agentName, user)
     console.log('entities is', entities)
     async.each(entities, function(entity,callBack){
         doBuildEntityConfig(entityPath(configPath, agentName), entity)
@@ -93,8 +93,8 @@ async function doBuildIntentConfig(intentPath, intent){
 }
 
 //////////////////////////////////////////////////////////////////
-async function buildConfigForIntent(configPath, agentName){
-    var intents = await intentDb.getIntentsForServer(agentName)
+async function buildConfigForIntent(configPath, user, agentName){
+    var intents = await intentDb.getIntentsForServer(agentName, user)
     console.log("intents is", intents)
     async.each(intents, function(intent, callBack){
         doBuildIntentConfig(intentPath(configPath, agentName), intent)
@@ -109,9 +109,9 @@ async function buildConfigs(agent, user) {
     var configPath = tempPath + uuid.v1()
     try {
         await createAgentConfigPaths(configPath, agent)
-        await buildAgentConfig(configPath, agent)
-        await buildConfigForEntities(configPath,agent)
-        await buildConfigForIntent(configPath, agent)
+        await buildAgentConfig(configPath, user,agent)
+        await buildConfigForEntities(configPath,user, agent)
+        await buildConfigForIntent(configPath, user, agent)
         // await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
         await shellExecutor.execute("./dgConfig/agentDeploy.sh", [configPath, user, agent])
         console.log("send restart event for", agent)
