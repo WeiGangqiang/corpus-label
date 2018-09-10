@@ -38,7 +38,7 @@ async function createAgentConfigPaths(configPath, agent){
 
 //////////////////////////////////////////////////////////////////
 async function buildAgentConfig(configPath, user, agentName){
-    var agent = await agentDb.getAgentByName(user,agentName)
+    var agent = await agentDb.getAgentByName(user, agentName)
     console.log('agent is', agent)
     await fileUtils.writeYaml(configPath + "/" + agentName + ".yaml", agent)
 }

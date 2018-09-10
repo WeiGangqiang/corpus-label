@@ -44,7 +44,7 @@ app.use(function(req, res, next){
 
 app.use(async function(req, res, next){
     console.log("receive request url:", req.url)
-    if(req.url.startsWith('/user/login')){
+    if(req.url.startsWith('/user/login') || req.url.startsWith('/remote-dg')){
         next()
     }else{
         if(req.session.user){
