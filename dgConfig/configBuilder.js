@@ -105,7 +105,7 @@ async function buildConfigForIntent(configPath, agentName){
 }
 
 //////////////////////////////////////////////////////////////////
-async function buildConfigs(agent) {
+async function buildConfigs(agent, user) {
     var configPath = tempPath + uuid.v1()
     try {
         await createAgentConfigPaths(configPath, agent)
@@ -113,9 +113,9 @@ async function buildConfigs(agent) {
         await buildConfigForEntities(configPath,agent)
         await buildConfigForIntent(configPath, agent)
         // await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
-        await shellExecutor.execute("./dgConfig/agentDeploy.sh", [configPath, agent])
+        await shellExecutor.execute("./dgConfig/agentDeploy.sh", [configPath, user, agent])
         console.log("send restart event for", agent)
-        var ret = await postJson(config.chatbotUrl, {agent,name:"restart"})
+        var ret = await postJson(config.chatbotUrl, {user, agent,name:"restart"})
         console.log('restart chatbot res', ret)
         // fileUtils.deleteDir(configPath) 
         return { retCode: "success" } 
