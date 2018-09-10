@@ -17,7 +17,14 @@ var userApp = require('./subApp/user.js')
 
 var cors = require('cors');  
 var app = express();
-app.use(cors())
+
+const corsOption = {
+    origin: function(origin, callback) {
+        callback(null, true)
+    },
+    credentials: true
+}
+app.use(cors(corsOption))
 app.use(bodyParser.json());
 app.use(session({
     secret:'12345',
@@ -29,21 +36,20 @@ app.use(session({
 
 app.use(async function(req, res, next){
     console.log("receive request url:", req.url)
-    next()
-    // if(req.url.startsWith('/user/login')){
-    //     next()
-    // }else{
-    //     if(req.session.user){
-    //         if(await userApp.isValidUser(req.session.user)){
-    //             next()
-    //         }else{
-    //             res.send({retCode: "fail", retText: "user check fail"})
-    //         }
-    //     }
-    //     else{
-    //         res.send({retCode: "fail", retText: "user not login"})
-    //     }
-    // }
+    if(req.url.startsWith('/user/login')){
+        next()
+    }else{
+        if(req.session.user){
+            if(await userApp.isValidUser(req.session.user)){
+                next()
+            }else{
+                res.send({retCode: "401", retText: "user check fail"})
+            }
+        }
+        else{
+            res.send({retCode: "401", retText: "user not login"})
+        }
+    }
 })
 
 //////////////////////////////////////////////////////////////////

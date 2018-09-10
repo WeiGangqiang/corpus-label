@@ -17,19 +17,19 @@ async function isValidUser(user){
 }
 
 //////////////////////////////////////////////////////////////////
-app.get("/login", async function(req, res){
-    if("name" in req.query && "password" in req.query){
+app.post("/login", async function(req, res){
+    if("name" in req.body && "password" in req.body){
         var user = {}
-        user.name = req.query.name
-        user.password = req.query.password
+        user.name = req.body.name
+        user.password = req.body.password
         if(await isValidUser(user)){
             req.session.user = user
             res.send({ retCode: "success" })
         }else{
-            res.send({ retCode: "fail", retText: "user not exsit" })
+            res.send({ retCode: "401", retText: "user not exsit" })
         }
     }else{
-        res.send({ retCode: "fail", retText: "para check failed" })
+        res.send({ retCode: "401", retText: "para check failed" })
     }
 })
 
