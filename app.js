@@ -92,7 +92,7 @@ app.post("/generate", async function(req, res){
 
 //////////////////////////////////////////////////////////////////
 app.post("/remote-dg", async function(req, res){
-    var ret = await dbApi.generateDone(req.body.agent, req.body.modelPath)
+    var ret = await dbApi.generateDone(req.body.agent, req.body.user, req.body.modelPath)
     res.send(ret)
 })
 

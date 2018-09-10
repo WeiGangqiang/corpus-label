@@ -252,9 +252,10 @@ async function getIntentIdByModelPath(agent, modelPath) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function generateDone(agent, modelPath){
+async function generateDone(agent, user, modelPath){
     var intent = {}
     intent.agent = agent
+    intent.user = user
     intent.intentId = await getIntentIdByModelPath(agent, modelPath)
     if (intent.intentId == null){
         return { retCode: "failed" }
