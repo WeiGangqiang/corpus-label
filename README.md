@@ -32,7 +32,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
-| user  | `String` | 用户的名字（ darwin） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 
 * 响应
@@ -106,7 +105,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
-| user  | `String` | 用户的名字（ darwin） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 | type | `String` | positive(正样本), negative(负样本) |
 
@@ -163,7 +161,6 @@
   "type"     : "positive", #"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -202,7 +199,6 @@
   "patternId": 2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -226,7 +222,6 @@
   "type"     : "positive",#"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -249,7 +244,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
-| user  | `String` | 用户名（ user）               |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
 
 
@@ -281,7 +275,6 @@
   "similars" : ["美丽", "漂亮"],
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -308,7 +301,6 @@
   "phraseId"  : "14700686050982298",
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -331,7 +323,6 @@
   "phraseId"    : "14700686050982298"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
-  "user"     : "darwin",
   "agent"    : "course-record"
 }
 ```
@@ -352,7 +343,6 @@
 {
   "sentence" : "我刘亦菲你喜欢吗",
   "intentId" : "14700686050928383",
-  "user"     : "darwin",
   "agent"    : "corpus-test"
 }
 ```
@@ -506,7 +496,7 @@
 ###7.6 打包指定的agent
 * 请求方式
 
-``` delete http://localhost:port/agent/pack```
+``` delete http://localhost:port/agent/publish```
 
 * 参数
 
@@ -514,17 +504,11 @@
 | --- | --- | --- |
 | agentId | `String` | agentId |
 | agent | `String` | 名字 |
-| user | `String` | 用户名(darwin)) |
 
 * 响应
 ```
 { retcode: "success" }
 ```
-
-###9.6 打包模型下载路径
-```http://localhost:port/package/{agentName}.zip ```
-
-
 
 ##8.0 实体
 ### 8.1 查询实体列表
@@ -537,7 +521,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` | 用户名(darwin)) |
 
 * 响应
 ```
@@ -561,7 +544,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` | 用户名(darwin)) |
 | entityName | `String` | 实体的名字 |
 
 
@@ -587,7 +569,6 @@
 ```
 {
 	"agent":"corpus-test",
-    "user" : "darwin",
 	"entity": {
 		"name": "size",
 		"items": ["4尺, 四尺", "5尺, 五️尺"]
@@ -612,7 +593,6 @@
 ```
 {
 	"agent":"corpus-test",
-    "user" : "darwin",  
 	"entity": {
 		"name": "clever",
 		"entityId":"14700686055675270",
@@ -637,7 +617,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字 |
-| user | `String` | 用户名(darwin) |
 | entityId | `String` | 实体的ID |
 
 * 响应
@@ -656,7 +635,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` | 用户名(darwin) |
 | entityName | `String` | 实体的名字 |
 
 
@@ -716,7 +694,6 @@
     }]
   },
   "intentId" : "14700686050928383",
-  "user" : "darwin",
   "agent"    : "corpus-test"
 
 }
@@ -751,7 +728,6 @@
  "accept"  : true,
  "intentId": "14700686044264578",
  "agent"  :  "record-course"
- "user"  :  "darwin"
 }
 ```
 
@@ -774,7 +750,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` | 用户名(darwin) |
 
 * 响应
 ```
@@ -807,7 +782,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` |  用户名(darwin) |
 | intentId | `String` | 意图的ID |
 
 
@@ -831,7 +805,6 @@
 
 ```
 {"agent": "corpus-test",
- "user" : "darwin",
  "intent": {
     "name": "who-you-are",
     "zhName": "你是谁",
@@ -856,7 +829,6 @@
 
 ```
 {"agent": "corpus-test",
- "user" : "darwin",
  "intent" :{
     "intentId": "14700686055670147"
     "name": "who-you-are",
@@ -883,7 +855,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent的名字 |
-| user | `String` | 用户名(darwin)) |
 | intentId | `String` | 意图的ID |
 
 * 响应
@@ -902,7 +873,6 @@
 ```
 {
 	"agent": "corpus-test",
-    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -928,7 +898,6 @@
 ```
 {
 	"agent": "corpus-test",
-    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -954,7 +923,6 @@
 
 {
 	"agent": "corpus-test",
-    "user" : "darwin",
 	"intentId": "14700686058075530",
 	"parameter": {
 		"name"  : "testadd",
@@ -1001,7 +969,6 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | agent | `String` | agent名字 |
-| user | `String` | 用户名(darwin) |
 | intentId | `String` | 意图的ID |
 
 
@@ -1031,7 +998,6 @@
 ```
 {
     "agent":"corpus-test",
-    "user" : "darwin",
     "intentId": "14700686058075550",
     "actions": [{"type": "replies", "values": ["你是谁", "我爱你"] }] 
 }
