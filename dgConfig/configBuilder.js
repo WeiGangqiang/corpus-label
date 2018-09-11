@@ -102,7 +102,7 @@ async function doBuildIntentConfig(intentPath, intent){
 
 //////////////////////////////////////////////////////////////////
 async function buildConfigForIntent(configPath, user, agentName){
-    var intents = await intentDb.getIntentsForServer(agentName, user)
+    var intents = await intentDb.getIntentInfosForServer(agentName, user)
     console.log("intents is", intents)
     async.each(intents, function(intent, callBack){
         doBuildIntentConfig(intentPath(configPath, agentName), intent)

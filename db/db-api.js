@@ -218,8 +218,16 @@ function generateForPhrase(sentence, label, intentPhrase) {
     })
 }
 
+function discordPunctuation(sentence){
+    var puncs = [',', ';', '.', '?', '!', '，','；','。','？','！','—','…','~']
+    var ret = sentence
+    puncs.forEach(punc =>ret =  ret.replace(punc, ""))
+    return ret
+}
+
 //////////////////////////////////////////////////////////////////
 function generateSentences(sentence, labels, intentPhrase, intentParas) {
+    sentence = discordPunctuation(sentence)
     if (labels.length == 0) {
         return [sentence]
     }

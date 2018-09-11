@@ -17,11 +17,16 @@ async function getIntentsFor(agent, user) {
     return ret
 }
 
+function intentInfoAll(intent){
+    var ret = formatIntent(intent)
+    ret.actions = intent.actions
+    return ret
+}
 //////////////////////////////////////////////////////////////////
-async function getIntentsForServer(agent, user){
+async function getIntentInfosForServer(agent, user){
     const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var ret = await db.query(`FOR doc IN ${collectionName} filter doc.mode=='server' return doc `).then(cursor => cursor.all())
-    .then(intents => intents.map( intent => {return formatIntent(intent)}),
+    .then(intents => intents.map( intent => {return intentInfoAll(intent)}),
     err => { console.error("error log", err); return []})
     return ret
 }
@@ -234,7 +239,7 @@ async function updateParameter(intent, parameter){
 
 module.exports = { 
     getIntentsFor,
-    getIntentsForServer,
+    getIntentInfosForServer,
     getIntent,
     addIntent,
     deleteIntent,
