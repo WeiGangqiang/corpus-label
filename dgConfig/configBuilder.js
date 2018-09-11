@@ -49,6 +49,7 @@ async function buildAgentConfig(configPath, user, agentName){
 async function doBuildEntityConfig(entityPath, entity){
     var entityYaml = {}
     entityYaml.enum = entity.name
+    entityYaml.mode = "server"
     entityYaml.values =[{list: entity.items}]
     await fileUtils.writeYaml(entityPath + "/" + entity.name + ".yaml", entityYaml)
 }
