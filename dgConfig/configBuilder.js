@@ -41,6 +41,7 @@ async function createAgentConfigPaths(configPath, agent){
 async function buildAgentConfig(configPath, user, agentName){
     var agent = await agentDb.getAgentByName(user, agentName)
     console.log('agent is', agent)
+    agent.agentName = agent.name
     await fileUtils.writeYaml(configPath + "/" + agentName + ".yaml", agent)
 }
 
@@ -77,9 +78,9 @@ function doBuildIntentParameters(parameters){
 //////////////////////////////////////////////////////////////////
 async function doBuildIntentConfig(intentPath, intent){
     var intentYaml = {}
-    intentYaml["intent"] = intent.name
+    intentYaml["intent"]  = intent.name
     intentYaml["zh-name"] = intent.zhName
-    intentYaml["mode"] = "server"
+    intentYaml["mode"]    = "server"
     var paths = intent.modelPath.split("/").slice(3)
     if(paths.length > 1){
         intentYaml["in-contexts"] = [paths.slice(0,-1).join(".")]
