@@ -34,8 +34,9 @@ app.post("/login", async function(req, res){
 })
 
 //////////////////////////////////////////////////////////////////
-app.get("/logout", async function(req, res){
+app.post("/logout", async function(req, res){
     req.session.user = null
+    res.send({ retCode: "success" })
 })
 
 
