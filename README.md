@@ -500,10 +500,10 @@
 
 * 参数
 
-| Param | Type | Description |
-| --- | --- | --- |
-| agentId | `String` | agentId |
-| agent | `String` | 名字 |
+{
+    "agent" : "corpus-test",
+    "agentId" : "1111111111111"
+}
 
 * 响应
 ```
