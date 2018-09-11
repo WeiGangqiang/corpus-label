@@ -242,8 +242,8 @@ async function generateSentencesFor(intent, pattern) {
     return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
 }
 
-async function getIntentIdByModelPath(agent, modelPath) {
-    const collectionName = dbUtils.getIntentCollectionName(agent);
+async function getIntentIdByModelPath(user, agent, modelPath) {
+    const collectionName = dbUtils.getIntentCollectionName(agent, user);
     var ret = await db.query(`FOR doc IN ${collectionName} filter doc.modelPath=='${modelPath}' return doc `).then(cursor => cursor.all())
     .then(intents => { if(intents.length == 0) return null;
                        return intents[0]._key },
@@ -256,7 +256,7 @@ async function generateDone(agent, user, modelPath){
     var intent = {}
     intent.agent = agent
     intent.user = user
-    intent.intentId = await getIntentIdByModelPath(agent, modelPath)
+    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
     if (intent.intentId == null){
         return { retCode: "failed" }
     }
