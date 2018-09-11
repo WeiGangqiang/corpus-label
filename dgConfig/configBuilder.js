@@ -89,6 +89,7 @@ async function doBuildIntentConfig(intentPath, intent){
     intentYaml["lifespan"] = 5
     if(intent.parameters.length > 0){
         intentYaml["parameters"] = doBuildIntentParameters(intent.parameters)
+        intentYaml["stereotype"] = "slot-filling"
     }
     intentYaml["user-says"] = null
     if(intent.actions && intent.actions.length >= 1){
