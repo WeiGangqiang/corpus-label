@@ -91,11 +91,16 @@ async function doBuildIntentConfig(intentPath, intent){
         intentYaml["parameters"] = doBuildIntentParameters(intent.parameters)
     }
     intentYaml["user-says"] = null
-    intentYaml["actions"] = intent.actions.map(action => {
-        var ret = {}
-        ret[action.type] = action.values
-        return ret
-    })
+    if(intent.actions && intent.actions.length >= 1){
+        intentYaml["actions"] = intent.actions.map(action => {
+            var ret = {}
+            ret[action.type] = action.values
+            return ret
+        })
+    }else{
+        intentYaml["replies"] = ["意图没有配置回复"]
+    }
+    
     console.log('build itent is', intentYaml)
     await fileUtils.writeYaml(intentPath + "/" + intent.name + ".yaml", intentYaml)
 }
