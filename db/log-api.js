@@ -6,8 +6,9 @@ Database = arango.Database;
 var db2 = new Database(`http://${config.host2}:${config.port}`);
 
 //////////////////////////////////////////////////////////////////
-async function getUnknownSays(agent) {
-    db2.useDatabase(`${agent}-logs`);
+async function getUnknownSays(agent, userName) {
+    let agentDbName = agent + "_" + userName
+    db2.useDatabase(`${agentDbName}-logs`);
     db2.useBasicAuth(config.user,config.password);
     var ret = []
     const aql =   `FOR say in unknownSays

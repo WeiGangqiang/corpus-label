@@ -79,7 +79,8 @@ app.post("/corpus", async function(req, res){
 //////////////////////////////////////////////////////////////////
 app.get("/unknown-says", async function(req, res){
     const agent= req.query.agent;
-    var ret = await logDb.getUnknownSays(agent)
+    const userName = req.session.user.name
+    var ret = await logDb.getUnknownSays(agent, userName)
     res.send(ret)
 })
 
