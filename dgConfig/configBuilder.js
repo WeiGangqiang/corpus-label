@@ -91,7 +91,11 @@ async function doBuildIntentConfig(intentPath, intent){
         intentYaml["parameters"] = doBuildIntentParameters(intent.parameters)
     }
     intentYaml["user-says"] = null
-    intentYaml["replies"] = ["我是小哒"]
+    intentYaml["actions"] = intent.actions.map(action => {
+        var ret = {}
+        ret[action.type] = action.values
+        return ret
+    })
     console.log('build itent is', intentYaml)
     await fileUtils.writeYaml(intentPath + "/" + intent.name + ".yaml", intentYaml)
 }
