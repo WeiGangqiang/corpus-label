@@ -3,13 +3,18 @@ var config = require('../config.js')
 
 Database = arango.Database;
 
-var db2 = new Database(`http://${config.host2}:${config.port}`);
+var db2 = new Database(`http://${config.host}:${config.port}`);
 
 //////////////////////////////////////////////////////////////////
 async function getUnknownSays(agent, userName) {
     let agentDbName = agent + "_" + userName
+    db2.useBasicAuth(config.user, config.password);
+    let databases = await db2.listUserDatabases()
+    let logDbName = `${agentDbName}-logs`
+    if (!databases.includes(logDbName)){
+        return []
+    }
     db2.useDatabase(`${agentDbName}-logs`);
-    db2.useBasicAuth(config.user,config.password);
     var ret = []
     const aql =   `FOR say in unknownSays
                     FILTER say.taged != true
