@@ -50,13 +50,11 @@ app.delete("/parameter", async function(req, res){
     res.send(ret)
 })
 
-// app.get("/parameter", async function(req, res){
-
-// })
-
-// app.get("/parameter/all", async function(req, res){
-
-// })
+app.get("/parameter/all", async function(req, res){
+    var intent = utils.getIntentFromReqQuery(req)
+    var ret = await dbApi.getParameterAll(intent)
+    res.send(ret)
+})
 
 app.put("/parameter", async function(req, res){
     var intent = utils.getIntentFromReqBody(req)

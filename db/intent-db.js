@@ -133,6 +133,13 @@ function indexToLabel(index){
 }
 
 //////////////////////////////////////////////////////////////////
+function assignOption(lft, rht, fieldName){
+    if(fieldName in rht ){
+        lft[fieldName] = rht[fieldName]
+    }
+}
+
+//////////////////////////////////////////////////////////////////
 async function addParameter(intent, parameter){
     var intentInfo = await getIntent(intent.agent, intent.user, intent.intentId)
     if( "name" in parameter && "entity" in parameter){
@@ -141,8 +148,16 @@ async function addParameter(intent, parameter){
             name: parameter.name,
             label: indexToLabel(length),
             entity: parameter.entity,
-            isList: false
+            isList: false,
+            require: false,
+            prompt : [],
+            posPatterns: [],
+            negPatterns: [],
+            posGenSentence: [],
+            negGenSentence: []
         }
+        assignOption(para, parameter, "require")
+        assignOption(para, parameter, "prompt")
         await dbUtils.appendItemsToArray(intent, "parameters", para)
         return { retCode: "success"}
     }else{
@@ -226,14 +241,73 @@ async function updateParameter(intent, parameter){
         if(parameters[paraIndex].name != parameter.name){
             await renamePatternLabel(intent, parameters[paraIndex].name, parameter.name)
             parameters[paraIndex].name = parameter.name
+        }else{
         }
+        
     }else{
-       await deletePatternLabel(intent, parameters[paraIndex].name)
-       parameters[paraIndex].name = parameter.name
-       parameters[paraIndex].entity = parameter.entity
+        await deletePatternLabel(intent, parameters[paraIndex].name)
+        parameters[paraIndex].name = parameter.name
+        parameters[paraIndex].entity = parameter.entity
     }
+    assignOption(para, parameter, "require")
+    assignOption(para, parameter, "prompt")
     await dbUtils.updateToArrayTo(intent, "parameters", parameters)
     return { retCode: "success"}
+}
+
+//////////////////////////////////////////////////////////////////
+async function getPatternForSlot(intent, slotLabel, type){
+    let parameters = await getParameterAll(intent)
+    let paraIndex  = labelToIndex(slotLabel)
+    let parameter = parameters[paraIndex]
+    let patternField = dbUtils.getPatternField(type)
+    if(patternField in parameter){
+        return parameter[patternField]
+    }else{
+        return []
+    }
+}
+
+//////////////////////////////////////////////////////////////////
+async function addPatternForSlot(intent, slotLabel, pattern, type){
+    let parameters = await getParameterAll(intent)
+    let paraIndex  = labelToIndex(slotLabel)
+    let parameter = parameters[paraIndex]
+    let patternField = dbUtils.getPatternField(type)
+    if(!(patternField in parameter)){
+        return restUtils.failRsp("parameter has no pattern")
+    }
+    parameter[patternField].push(pattern)
+    await dbUtils.updateToArrayTo(intent, "parameters", parameters)
+    return { retCode: "success"}   
+}
+
+//////////////////////////////////////////////////////////////////
+async function removePatternForSlot(intent, slotLabel, patternId, type){
+    let parameters = await getParameterAll(intent)
+    let paraIndex  = labelToIndex(slotLabel)
+    let parameter = parameters[paraIndex]
+    let patternField = dbUtils.getPatternField(type)
+    if(!(patternField in parameter)){
+        return restUtils.failRsp("parameter has no pattern")
+    }
+    parameter[patternField].splice(patternId,1)
+    await dbUtils.updateToArrayTo(intent, "parameters", parameters)
+    return { retCode: "success"}  
+}
+
+//////////////////////////////////////////////////////////////////
+async function updatePatternForSlot(intent, slotLabel, patternId, pattern, type){
+    let parameters = await getParameterAll(intent)
+    let paraIndex  = labelToIndex(slotLabel)
+    let parameter = parameters[paraIndex]
+    let patternField = dbUtils.getPatternField(type)
+    if(!(patternField in parameter)){
+        return restUtils.failRsp("parameter has no pattern")
+    }
+    parameter[patternField][patternId] = pattern
+    await dbUtils.updateToArrayTo(intent, "parameters", parameters)
+    return { retCode: "success"} 
 }
 
 
@@ -249,5 +323,9 @@ module.exports = {
     addParameter,
     getParameterAll,
     deleteParameter,
-    updateParameter
+    updateParameter,
+    getPatternForSlot,
+    addPatternForSlot,
+    removePatternForSlot,
+    updatePatternForSlot
 }
