@@ -5,7 +5,7 @@ var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
 function formatIntent(intent){
-    var valid = intent.actions.length > 0
+    var valid = intent.actions && intent.actions.length > 0
 
     return { intentId : intent._key, 
              name     : intent.name, 
