@@ -106,6 +106,7 @@
 | --- | --- | --- |
 | agent | `String` | agent的名字（ course-record） |
 | intentId | `String` | agent的名字（例如"14700686044264578") |
+| slotLabel | `String` | 槽位的下标，optinal |
 | type | `String` | positive(正样本), negative(负样本) |
 
 
@@ -161,6 +162,7 @@
   "type"     : "positive", #"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "slotLabel"   : "L0", //optional
   "agent"    : "course-record"
 }
 ```
@@ -199,6 +201,7 @@
   "patternId": 2
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "slotLabel"   : "L0", //optional
   "agent"    : "course-record"
 }
 ```
@@ -222,6 +225,7 @@
   "type"     : "positive",#"positive/negative"
   "intentId" : "14700686044264578",
   "intent"   : "record-course,
+  "slotLabel"   : "L0", //optional
   "agent"    : "course-record"
 }
 ```
@@ -877,6 +881,8 @@
 	"parameter": {
 		"name"  : "testadd",
 		"entity": "star"
+        "requre": false,
+        "prompt": ["你好吗"]
 	}
 }
 ```
@@ -902,7 +908,9 @@
 	"parameter": {
 		"name"  : "testadd",
 		"entity": "star",
-		"label" : "L0"
+		"label" : "L0",
+        "requre": false,
+        "prompt": ["你好吗"]
 	}
 }
 
