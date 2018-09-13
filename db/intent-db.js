@@ -5,7 +5,15 @@ var db = arongodb.getDb()
 
 //////////////////////////////////////////////////////////////////
 function formatIntent(intent){
-    return { intentId: intent._key, name: intent.name, mode:intent.mode, zhName: intent.zhName, modelPath: intent.modelPath, parameters:intent.parameters }
+    var valid = intent.actions.length > 0
+
+    return { intentId : intent._key, 
+             name     : intent.name, 
+             mode     : intent.mode, 
+             zhName   : intent.zhName, 
+             modelPath: intent.modelPath, 
+             parameters:intent.parameters,
+             valid    : valid}
 }
 
 //////////////////////////////////////////////////////////////////
@@ -215,7 +223,6 @@ async function getParameterAll(intent){
     var intentInfo = await getIntent(intent.agent, intent.user, intent.intentId)
     return intentInfo.parameters
 }
-
 
 //////////////////////////////////////////////////////////////////
 async function deleteParameter(intent, parameter){

@@ -8,6 +8,11 @@ app.get("/names", async function(req, res){
     res.send(entityNames);
 })
 
+app.get("/all", async function(req, res){
+    var entities = await dbApi.getAllEntityBaseInfo(req.query.agent, req.session.user.name)
+    res.send(entities);
+})
+
 app.get("/", async function(req, res){
     var entity = await dbApi.getEntity(req.query.agent, req.session.user.name, req.query.entityName);
     res.send(entity);

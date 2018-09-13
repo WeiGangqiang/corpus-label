@@ -28,6 +28,12 @@ async function getEntitiesAll(agent, user) {
 }
 
 //////////////////////////////////////////////////////////////////
+async function getAllEntityBaseInfo(agent, user){
+    var entities = await getEntitiesAll(agent, user)
+    return entities.map((entity => {return {name: entity.name, valid: (entity.items.length > 0)}}))
+}
+
+//////////////////////////////////////////////////////////////////
 function formatEntity(doc){
     var entity = {
         name : doc.name,
@@ -141,5 +147,6 @@ module.exports = {
     deleteEntity,
     updateEntity,
     getEntitiesAll,
-    getReferenceFor
+    getReferenceFor,
+    getAllEntityBaseInfo
 }
