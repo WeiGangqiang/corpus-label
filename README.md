@@ -867,6 +867,61 @@
 ```
 
 
+###11.5 查询变量列表
+* 请求方式
+
+``` get http://localhost:port/intent/parameter/all```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent的名字（ course-record） |
+| intentId | `String` | agent的名字（例如"14700686044264578") |
+
+* 响应
+
+```
+[
+    {
+        "name": "record-weekday",
+        "label": "L0",
+        "entity": "sys.weekday",
+        "isList": false,
+        "requrie": false,
+        "prompt": []
+        "values": [
+            "礼拜[日]/L0 ",
+            "星期[5]/L0 ",
+            "周[4]/L0 ",
+            "周[五]/L0 ",
+            "礼拜[四]/L0 ",
+            "星期[1]/L0 ",
+            "周[6]/L0 ",
+            "周[四]/L0 ",
+            "周[天]/L0 ",
+            "星期[天]/L0 ",
+            "星期[三]/L0 ",
+            "周[日]/L0 ",
+            "礼拜[4]/L0 ",
+            "礼拜[天]/L0 ",
+            "星期[4]/L0 ",
+            "礼拜[5]/L0 ",
+            "礼拜[三]/L0 ",
+            "礼拜[3]/L0 ",
+            "星期[2]/L0 ",
+            "礼拜[1]/L0 "
+        ],
+        "subEntities": [
+            "weekday:L0"
+        ],
+        "kind": "enums"
+    }
+]
+
+```
+
+
 ###11.6 添加意图的参数
 * 请求方式
 
@@ -891,7 +946,6 @@
 ```
 { retcode: "success" , intentId: "14700686055670147"}
 ```
-
 
 ###11.7 更新意图的参数
 

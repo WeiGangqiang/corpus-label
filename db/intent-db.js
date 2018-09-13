@@ -216,6 +216,7 @@ async function getParameterAll(intent){
     return intentInfo.parameters
 }
 
+
 //////////////////////////////////////////////////////////////////
 async function deleteParameter(intent, parameter){
     var parameters = await getParameterAll(intent)
