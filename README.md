@@ -94,7 +94,7 @@
 
 ## 4.0 语料规则
 
-### 4.1 查询语料规则
+###  4.1 查询语料规则
 * 请求方式
 
 ``` get http://localhost:port/pattern```
@@ -403,7 +403,7 @@
 ]
 ```
 
-###7.2 查询指定agent
+### 7.2 查询指定agent
 
 * 请求方式
 
@@ -429,7 +429,7 @@
 }
 ```
 
-###7.3 添加指定agent
+### 7.3 添加指定agent
 * 请求方式
 
 ``` post http://localhost:port/agent```
@@ -453,7 +453,7 @@
 ```
 
 
-###7.4 更新指定agent
+### 7.4 更新指定agent
 
 * 请求方式
 
@@ -479,7 +479,7 @@
 
 ```
 
-###7.5 删除指定的agent
+### 7.5 删除指定的agent
 * 请求方式
 
 ``` delete http://localhost:port/agent```
@@ -497,7 +497,7 @@
 ```
 
 
-###7.6 打包指定的agent
+### 7.6 打包指定的agent
 * 请求方式
 
 ``` delete http://localhost:port/agent/publish```
@@ -514,7 +514,7 @@
 { retcode: "success" }
 ```
 
-##8.0 实体
+## 8.0 实体
 ### 8.1 查询实体列表
 * 请求方式
 
@@ -537,7 +537,29 @@
 
 ```
 
-###8.2 查询指定实体
+### 8.2 查询实体列表
+* 请求方式
+
+``` get http://localhost:port/entity/all```
+
+* 参数
+
+| Param | Type | Description |
+| --- | --- | --- |
+| agent | `String` | agent名字 |
+
+* 响应
+```
+[
+    {
+        "name": "star",
+        "valid": true
+    }
+]
+
+```
+
+### 8.3 查询指定实体
 
 * 请求方式
 
@@ -563,7 +585,7 @@
 }
 ```
 
-###8.3 添加指定实体
+### 8.4 添加指定实体
 * 请求方式
 
 ``` post http://localhost:port/entity```
@@ -586,7 +608,7 @@
 ```
 
 
-###8.4 更新指定实体
+### 8.5 更新指定实体
 
 * 请求方式
 
@@ -611,7 +633,7 @@
 
 ```
 
-###8.5 删除指定的实体
+### 8.6 删除指定的实体
 * 请求方式
 
 ``` delete http://localhost:port/entity```
@@ -628,7 +650,7 @@
 { retcode: "success" }
 ```
 
-###8.6 查询实体的引用
+### 8.7 查询实体的引用
 
 * 请求方式
 
@@ -743,7 +765,7 @@
 
 
 
-##11.0 实体
+## 11.0 实体
 ### 11.1 查询意图列表
 * 请求方式
 
@@ -763,6 +785,7 @@
         "name": "record-course",
         "zhName": "录课程",
         "modelPath": "users/course-record/record-course",
+        "valid": false,
         "parameters"[]
     },
     {
@@ -770,12 +793,13 @@
         "name": "query-exsited-books",
         "zhName": "查询其他时间",
         "modelPath": "users/course-record/query-specifed-book:query-exsited-books",
+        "valid": false,
         "parameters"[]
     }
 ]
 ```
 
-###11.2 查询指定意图
+### 11.2 查询指定意图
 
 * 请求方式
 
@@ -800,7 +824,7 @@
 }
 ```
 
-###11.3 添加指定意图
+### 11.3 添加指定意图
 * 请求方式
 
 ``` post http://localhost:port/intent```
@@ -823,7 +847,7 @@
 ```
 
 
-###11.4 更新指定意图
+###  11.4 更新指定意图
 
 * 请求方式
 
@@ -849,7 +873,7 @@
 
 ```
 
-###11.5 删除指定的意图
+###  11.5 删除指定的意图
 * 请求方式
 
 ``` delete http://localhost:port/intent```
@@ -867,7 +891,7 @@
 ```
 
 
-###11.5 查询变量列表
+### 11.6 查询变量列表
 * 请求方式
 
 ``` get http://localhost:port/intent/parameter/all```
@@ -922,7 +946,7 @@
 ```
 
 
-###11.6 添加意图的参数
+### 11.7 添加意图的参数
 * 请求方式
 
 ``` post http://localhost:port/intent/parameter```
@@ -947,7 +971,7 @@
 { retcode: "success" , intentId: "14700686055670147"}
 ```
 
-###11.7 更新意图的参数
+### 11.8 更新意图的参数
 
 * 请求方式
 
@@ -976,7 +1000,7 @@
 
 ```
 
-###11.8 删除意图的参数
+### 11.9 删除意图的参数
 * 请求方式
 
 ``` delete http://localhost:port/intent/parameter```
@@ -1020,7 +1044,7 @@
 
 
 ## 12.0 动作
-###12.1 查询动作
+### 12.1 查询动作
 
 * 请求方式
 
@@ -1050,7 +1074,7 @@
 }
 ```
 
-###12.2 更新动作
+### 12.2 更新动作
 * 请求方式
 
 ``` post http://localhost:port/intent/actions```
