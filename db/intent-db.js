@@ -257,8 +257,8 @@ async function updateParameter(intent, parameter){
         parameters[paraIndex].name = parameter.name
         parameters[paraIndex].entity = parameter.entity
     }
-    assignOption(para, parameter, "require")
-    assignOption(para, parameter, "prompt")
+    assignOption(parameters[paraIndex], parameter, "require")
+    assignOption(parameters[paraIndex], parameter, "prompt")
     await dbUtils.updateToArrayTo(intent, "parameters", parameters)
     return { retCode: "success"}
 }
