@@ -4,6 +4,10 @@ var dbUtils = require('./dbUtils.js')
 var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
+function getSysAnyValues(entityName){
+    
+}
+
 //////////////////////////////////////////////////////////////////
 async function getEntityValuesFor(agent, user, entityName) {
     var ret = []

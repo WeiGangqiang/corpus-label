@@ -41,8 +41,12 @@ async function createAgentConfigPaths(configPath, agent){
 async function buildAgentConfig(configPath, user, agentName){
     var agent = await agentDb.getAgentByName(user, agentName)
     console.log('agent is', agent)
+    if(agent.mode && agent.mode == "local"){
+        return false
+    }
     agent.agentName = agent.name
     await fileUtils.writeYaml(configPath + "/" + agentName + ".yaml", agent)
+    return true
 }
 
 //////////////////////////////////////////////////////////////////
@@ -123,7 +127,11 @@ async function buildConfigs(agent, user) {
     var configPath = tempPath + uuid.v1()
     try {
         await createAgentConfigPaths(configPath, agent)
-        await buildAgentConfig(configPath, user,agent)
+        var ret = await buildAgentConfig(configPath, user,agent)
+        if(!ret){
+            console.log("do not build config for local agent")
+            return { retCode: "success" } 
+        }
         await buildConfigForEntities(configPath,user, agent)
         await buildConfigForIntent(configPath, user, agent)
         // await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  

@@ -32,6 +32,7 @@ function formatAgent(doc){
     addOptionField(agent, doc, "createTime")
     addOptionField(agent, doc, "unknownReplies")
     addOptionField(agent, doc, "shareAgents")
+    addOptionField(agent, doc, "mode")
     return agent
 }
 
