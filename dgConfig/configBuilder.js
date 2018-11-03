@@ -73,11 +73,30 @@ async function buildConfigForEntities(configPath, user, agentName){
 //////////////////////////////////////////////////////////////////
 function doBuildIntentParameters(parameters){
     return parameters.map( para => {
-        return { parameter : para.name,
+        var ret = { parameter : para.name,
                  entity    : para.entity,
                  "is-list" : para.isList
             }
+        if(para.require && para.require == true && para.prompt){
+            ret["actions"] = ["slot-filling"]
+        }
+        return ret
     })
+}
+
+//////////////////////////////////////////////////////////////////
+function doBuildParameterActions(parameters){
+    var paraActions = []
+    console.info("parameters is ======>", parameters)
+    parameters.forEach(para => {
+        if(para.require && para.require == true && para.prompt){
+            var action = {}
+            action.action = para.name + ":slot-filling"
+            action.questions = para.prompt
+            paraActions.push(action)
+        }
+    })
+    return paraActions
 }
 
 //////////////////////////////////////////////////////////////////
@@ -94,6 +113,11 @@ async function doBuildIntentConfig(intentPath, intent){
     if(intent.parameters.length > 0){
         intentYaml["parameters"] = doBuildIntentParameters(intent.parameters)
         intentYaml["stereotype"] = "slot-filling"
+    }
+
+    var paraActions = doBuildParameterActions(intent.parameters)
+    if(paraActions.length > 0){
+        intentYaml["parameter-actions"] = paraActions
     }
     intentYaml["user-says"] = null
     if(intent.actions && intent.actions.length >= 1){
@@ -133,13 +157,12 @@ async function buildConfigs(agent, user) {
             return { retCode: "success" } 
         }
         await buildConfigForEntities(configPath,user, agent)
-        await buildConfigForIntent(configPath, user, agent)
-        // await zipUtils.zipPath(configPath, "static/" + agent + ".zip")  
+        await buildConfigForIntent(configPath, user, agent) 
         await shellExecutor.execute("./dgConfig/agentDeploy.sh", [configPath, user, agent])
         console.log("send restart event for", agent)
         var ret = await postJson(config.chatbotUrl, {user, agent,name:"restart"})
-        console.log('restart chatbot res', ret)
-        // fileUtils.deleteDir(configPath) 
+        // console.log('restart chatbot res', ret)
+        fileUtils.deleteDir(configPath) 
         return { retCode: "success" } 
     } catch (error) {
         console.error(' build configs error is', error)
