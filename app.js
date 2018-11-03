@@ -107,7 +107,31 @@ app.post("/generate", async function(req, res){
 
 //////////////////////////////////////////////////////////////////
 app.post("/remote-dg", async function(req, res){
-    var ret = await dbApi.generateDone(req.body.agent, req.body.user, req.body.modelPath)
+    var ret = await dbApi.generateForIntent(req.body.agent, req.body.user, req.body.modelPath)
+    res.send(ret)
+})
+
+//////////////////////////////////////////////////////////////////
+app.post("/remote-dg/slot/pos", async function(req, res){
+    var ret = await dbApi.generateForSlotPos(req.body.agent, req.body.user, req.body.modelPath,req.body.slotName)
+    res.send(ret)
+})
+
+//////////////////////////////////////////////////////////////////
+app.post("/remote-dg/slot/neg", async function(req, res){
+    var ret = await dbApi.generateForSlotNeg(req.body.agent, req.body.user, req.body.modelPath,req.body.slotName)
+    res.send(ret)
+})
+
+//////////////////////////////////////////////////////////////////
+app.post("/remote-dg/intent/pos", async function(req, res){
+    var ret = await dbApi.generateForIntentPos(req.body.agent, req.body.user, req.body.modelPath)
+    res.send(ret)
+})
+
+//////////////////////////////////////////////////////////////////
+app.post("/remote-dg/intent/neg", async function(req, res){
+    var ret = await dbApi.generateForIntentNeg(req.body.agent, req.body.user, req.body.modelPath)
     res.send(ret)
 })
 

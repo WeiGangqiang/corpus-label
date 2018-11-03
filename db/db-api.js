@@ -4,9 +4,6 @@ var dbUtils = require('./dbUtils.js')
 var restUtils = require('./restUtils.js')
 var db = arongodb.getDb()
 
-function getSysAnyValues(entityName){
-    
-}
 
 //////////////////////////////////////////////////////////////////
 async function getEntityValuesFor(agent, user, entityName) {
@@ -57,6 +54,20 @@ function getPatternField(type){
 //////////////////////////////////////////////////////////////////
 async function getPatternFor(intent, type) {
     return dbUtils.getArrayListFor(intent, getPatternField(type))
+}
+
+//////////////////////////////////////////////////////////////////
+async function getSlotPatternFor(intent, slotName, type){
+    var fieldName = getPatternField(type)
+    var parameters = await dbUtils.getArrayListFor(intent, "parameters")
+    var findPara = parameters.filter( para => {
+        return para.name == slotName
+    })
+    if(findPara.length != 1){
+        return []
+    }
+    var ret = findPara[0][fieldName]
+    return ret
 }
 
 //////////////////////////////////////////////////////////////////
@@ -264,7 +275,7 @@ async function getIntentIdByModelPath(user, agent, modelPath) {
 }
 
 //////////////////////////////////////////////////////////////////
-async function generateDone(agent, user, modelPath){
+async function generateForIntent(agent, user, modelPath){
     var intent = {}
     intent.agent = agent
     intent.user = user
@@ -294,6 +305,80 @@ async function generateDone(agent, user, modelPath){
     })
     
     return { retCode: "success" }
+}
+
+async function generateSentencesForPatterns(intent, patterns){
+    var intentPhrase = await getPhraseFor(intent)
+    var intentParas = await getParasFor(intent)
+    var ret = []
+
+    patterns.forEach(pattern =>{
+        var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+        console.log("sentences is", sentences)
+        ret.push(...sentences)
+    })
+
+    return ret
+}
+
+//////////////////////////////////////////////////////////////////
+async function generateForIntentPos(agent, user, modelPath){
+    var intent = {}
+    intent.agent = agent
+    intent.user = user
+    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
+    if (intent.intentId == null){
+        return { retCode: "failed" }
+    }
+    console.log('generate pos sentence is called', intent)
+    var positive = await getPatternFor(intent, "positive")
+    var ret = await generateSentencesForPatterns(intent, positive)
+    return { retCode: "success", data: ret }
+}
+
+//////////////////////////////////////////////////////////////////
+async function generateForIntentNeg(agent, user, modelPath){
+    var intent = {}
+    intent.agent = agent
+    intent.user = user
+    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
+    if (intent.intentId == null){
+        return { retCode: "failed" }
+    }
+    console.log('generate neg sentence is called', intent)
+    var negative = await getPatternFor(intent, "negative")
+    var ret = await generateSentencesForPatterns(intent, negative)
+    return { retCode: "success", data: ret }
+}
+
+//////////////////////////////////////////////////////////////////
+async function generateForSlotPos(agent, user, modelPath, paraName){
+    var intent = {}
+    intent.agent = agent
+    intent.user = user
+    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
+    if (intent.intentId == null){
+        return { retCode: "failed" }
+    }
+    console.log('generate slot filling pos sentence is called', intent, paraName)
+    var positive = await getSlotPatternFor(intent, paraName, "positive")
+    var ret = await generateSentencesForPatterns(intent, positive)
+    return { retCode: "success", data: ret }
+}
+
+//////////////////////////////////////////////////////////////////
+async function generateForSlotNeg(agent, user, modelPath, paraName){
+    var intent = {}
+    intent.agent = agent
+    intent.user = user
+    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
+    if (intent.intentId == null){
+        return { retCode: "failed" }
+    }
+    console.log('generate slot filling neg sentence is called', intent, paraName)
+    var negative = await getSlotPatternFor(intent, paraName, "negative")
+    var ret = await generateSentencesForPatterns(intent, negative)
+    return { retCode: "success", data: ret }
 }
 
 //////////////////////////////////////////////////////////////////
@@ -341,7 +426,11 @@ module.exports = {
     deletePhraseFor,
     labelPredict,
     generateSentencesFor,
-    generateDone,
+    generateForIntent,
+    generateForSlotPos,
+    generateForSlotNeg,
+    generateForIntentNeg,
+    generateForIntentPos,
     updatePatterns
 }
 
