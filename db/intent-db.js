@@ -160,9 +160,7 @@ async function addParameter(intent, parameter){
             require: false,
             prompt : [],
             posPatterns: [],
-            negPatterns: [],
-            posGenSentence: [],
-            negGenSentence: []
+            negPatterns: []
         }
         assignOption(para, parameter, "require")
         assignOption(para, parameter, "prompt")
