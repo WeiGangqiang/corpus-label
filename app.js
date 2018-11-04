@@ -15,11 +15,11 @@ var entityApp = require('./subApp/entity.js')
 var agentApp = require('./subApp/agent.js')
 var userApp = require('./subApp/user.js')
 
-var cors = require('cors');  
+var cors = require('cors');
 var app = express();
 
 const corsOption = {
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         callback(null, true)
     },
     credentials: true
@@ -28,34 +28,34 @@ app.use(cors(corsOption))
 app.use(bodyParser.json());
 
 app.use(session({
-    secret :  'secret', // 对session id 相关的cookie 进行签名
-    resave : true,
+    secret: 'secret', // 对session id 相关的cookie 进行签名
+    resave: true,
     saveUninitialized: false, // 是否保存未初始化的会话
-    cookie : {
-        maxAge : 1000 * 60 * 20, // 设置 session 的有效时间，单位毫秒
+    cookie: {
+        maxAge: 1000 * 60 * 20, // 设置 session 的有效时间，单位毫秒
     },
 }));
 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     req.session._garbage = Date();
     req.session.touch();
     next();
 });
 
-app.use(async function(req, res, next){
+app.use(async function (req, res, next) {
     console.log("receive request url:", req.url)
-    if(req.url.startsWith('/user/login') || req.url.startsWith('/remote-dg')){
+    if (req.url.startsWith('/user/login') || req.url.startsWith('/remote-dg')) {
         next()
-    }else{
-        if(req.session.user){
-            if(await userApp.isValidUser(req.session.user)){
+    } else {
+        if (req.session.user) {
+            if (await userApp.isValidUser(req.session.user)) {
                 next()
-            }else{
-                res.send({retCode: "401", retText: "user check fail"})
+            } else {
+                res.send({ retCode: "401", retText: "user check fail" })
             }
         }
-        else{
-            res.send({retCode: "401", retText: "user not login"})
+        else {
+            res.send({ retCode: "401", retText: "user not login" })
         }
     }
 })
@@ -70,80 +70,78 @@ app.use("/agent", agentApp.app)
 app.use("/user", userApp.app)
 
 //////////////////////////////////////////////////////////////////
-app.post("/corpus", async function(req, res){
+app.post("/corpus", async function (req, res) {
     const msg = req.body
     var ret = await dbApi.addSentence(msg)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.get("/unknown-says", async function(req, res){
-    const agent= req.query.agent;
+app.get("/unknown-says", async function (req, res) {
+    const agent = req.query.agent;
     const userName = req.session.user.name
     var ret = await logDb.getUnknownSays(agent, userName)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/simplifier", async function(req, res){
+app.post("/simplifier", async function (req, res) {
     var ret = await postJson(config.simpliferUrl, req.body)
     console.log('simplifer result ', ret)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/label/predict", async function(req, res){
+app.post("/label/predict", async function (req, res) {
     var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.labelPredict(intent, req.body.sentence)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/generate", async function(req, res){
+app.post("/generate", async function (req, res) {
     var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.generateSentencesFor(intent, req.body.pattern)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/remote-dg", async function(req, res){
+app.post("/remote-dg", async function (req, res) {
     var ret = await dbApi.generateForIntent(req.body.agent, req.body.user, req.body.modelPath)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/remote-dg/slot/pos", async function(req, res){
-    var ret = await dbApi.generateForSlotPos(req.body.agent, req.body.user, req.body.modelPath,req.body.slotName)
-    res.send(ret)
+app.post("/remote-dg/slot", async function (req, res) {
+    if (req.body.kind == "positive") {
+        var ret = await dbApi.generateForSlotPos(req.body.agent, req.body.user, req.body.modelPath, req.body.slotName)
+        res.send(ret)
+    } else {
+        var ret = await dbApi.generateForSlotNeg(req.body.agent, req.body.user, req.body.modelPath, req.body.slotName)
+        res.send(ret)
+    }
+
+})
+//////////////////////////////////////////////////////////////////
+app.post("/remote-dg/intent", async function (req, res) {
+    if (req.body.kind == "positive") {
+        var ret = await dbApi.generateForIntentPos(req.body.agent, req.body.user, req.body.modelPath)
+        res.send(ret)
+    }else{
+        var ret = await dbApi.generateForIntentNeg(req.body.agent, req.body.user, req.body.modelPath)
+        res.send(ret)
+    }
 })
 
 //////////////////////////////////////////////////////////////////
-app.post("/remote-dg/slot/neg", async function(req, res){
-    var ret = await dbApi.generateForSlotNeg(req.body.agent, req.body.user, req.body.modelPath,req.body.slotName)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.post("/remote-dg/intent/pos", async function(req, res){
-    var ret = await dbApi.generateForIntentPos(req.body.agent, req.body.user, req.body.modelPath)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.post("/remote-dg/intent/neg", async function(req, res){
-    var ret = await dbApi.generateForIntentNeg(req.body.agent, req.body.user, req.body.modelPath)
-    res.send(ret)
-})
-
-//////////////////////////////////////////////////////////////////
-app.post("/pattern/sync", async function(req, res){
+app.post("/pattern/sync", async function (req, res) {
     var intent = utils.getIntentFromReqBody(req)
     var ret = await dbApi.updatePatterns(intent, req.body.phraseId, req.body.phrase)
     res.send(ret)
 })
 
 //////////////////////////////////////////////////////////////////
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -151,7 +149,7 @@ app.use(function(req, res, next) {
 
 
 //////////////////////////////////////////////////////////////////
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
@@ -163,7 +161,7 @@ app.use(function(err, req, res, next) {
 //////////////////////////////////////////////////////////////////
 var server = app.listen(config.runPort, function () {
     var host = server.address().address
-    var port = server.address().port  
-    console.log("server start on: http://%s:%s", host, port)  
+    var port = server.address().port
+    console.log("server start on: http://%s:%s", host, port)
 });
 
