@@ -308,6 +308,9 @@ async function generateForIntent(agent, user, modelPath){
 }
 
 async function generateSentencesForPatterns(intent, patterns){
+    if(patterns.length == 0){
+        return []
+    }
     var intentPhrase = await getPhraseFor(intent)
     var intentParas = await getParasFor(intent)
     var ret = []
