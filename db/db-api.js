@@ -212,14 +212,66 @@ function getPhraseBy(intentPhrase, label) {
 }
 
 //////////////////////////////////////////////////////////////////
+function getRandomIdex(length){
+    return Math.floor(Math.random()*length)
+}
+
+//////////////////////////////////////////////////////////////////
 function generateForEntity(sentence, label, intentParas) {
     var entity = getEntityBy(intentParas, label)
     if (!entity) {
         return [sentence]
     }
-    return entity.values.map(value => {
-        return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]/" + entity.label + " "+ sentence.slice(label.startPos + label.length)
+    if(entity.values.length < label.maxNum){
+        return entity.values.map(value => {
+            return sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]/" + entity.label + " "+ sentence.slice(label.startPos + label.length)
+        })
+    }else{
+        var ret= []
+        var valueSize = entity.values.length
+        for (var i= 0; i< label.maxNum; i++){
+            var value = entity.values[getRandomIdex(valueSize)]
+            ret.push(sentence.slice(0, label.startPos) + "[" + pattern.removeLablel(value).trim() + "]/" + entity.label + " "+ sentence.slice(label.startPos + label.length))
+        }
+        return ret        
+    }  
+}
+
+function calcGenerateSize(labels, intentPhrase, intentParas){
+    var allSize = 1
+    labels.forEach( label => {
+       if((label.type == "entity")){
+           var entity = getEntityBy(intentParas, label)
+           allSize = allSize * entity.values.length
+
+       }else{
+           var phrase = getPhraseBy(intentPhrase, label)
+           allSize = allSize * phrase.similars.length
+       }
     })
+    return allSize
+}
+
+//////////////////////////////////////////////////////////////////
+function  calcLabelRatio(labels, intentPhrase, intentParas, maxdgSize){
+     var allSize = calcGenerateSize(labels, intentPhrase, intentParas)
+     if(allSize < maxdgSize){
+         return labels.map(label => {
+             label.maxNum = 1000;
+             return label
+            })
+     }
+     return labels.map(label => {
+        if((label.type == "entity")){
+            var entity = getEntityBy(intentParas, label)
+            label.maxNum = Math.max(Math.floor((maxdgSize * entity.values.length)/allSize), 100)
+ 
+        }else{
+            var phrase = getPhraseBy(intentPhrase, label)
+            label.maxNum = Math.max(Math.floor((maxdgSize * phrase.similars.length)/allSize), 10)
+        }
+        return label
+     })
 }
 
 //////////////////////////////////////////////////////////////////
@@ -228,9 +280,19 @@ function generateForPhrase(sentence, label, intentPhrase) {
     if (!phrase) {
         return [sentence]
     }
-    return phrase.similars.map(value => {
-        return sentence.slice(0, label.startPos) + value + sentence.slice(label.startPos + label.length)
-    })
+    if (phrase.similars.length < label.maxNum) {
+        return phrase.similars.map(value => {
+            return sentence.slice(0, label.startPos) + value + sentence.slice(label.startPos + label.length)
+        })
+    }else{
+        var ret= []
+        var valueSize = phrase.similars.length
+        for (var i= 0; i< label.maxNum; i++){
+            var value = phrase.similars[getRandomIdex(valueSize)]
+            ret.push(sentence.slice(0, label.startPos) + value + sentence.slice(label.startPos + label.length))
+        }
+        return ret
+    }
 }
 
 function discordPunctuation(sentence){
@@ -262,6 +324,7 @@ async function generateSentencesFor(intent, pattern) {
     var intentParas = await getParasFor(intent)
     console.log("intent phrase list", intentPhrase)
     console.log("intent entity list", intentParas)
+    pattern.labels = calcLabelRatio(pattern.labels, intentPhrase, intentParas, 2000)
     return generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
 }
 
@@ -274,38 +337,6 @@ async function getIntentIdByModelPath(user, agent, modelPath) {
     return ret
 }
 
-//////////////////////////////////////////////////////////////////
-async function generateForIntent(agent, user, modelPath){
-    var intent = {}
-    intent.agent = agent
-    intent.user = user
-    intent.intentId = await getIntentIdByModelPath(user, agent, modelPath)
-    if (intent.intentId == null){
-        return { retCode: "failed" }
-    }
-    console.log('generate sentence is called', intent)
-    var positive = await getPatternFor(intent, "positive")
-    var negative = await getPatternFor(intent, "negative")
-    var intentPhrase = await getPhraseFor(intent)
-    var intentParas = await getParasFor(intent)
-    
-    await dbUtils.dropArrayAllItems(intent, "posGenSentence")
-    await dbUtils.dropArrayAllItems(intent, "negGenSentence")
-    
-    positive.forEach(pattern =>{
-        var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
-        console.log("sentences is", sentences)
-        dbUtils.appendItemsToArray(intent, "posGenSentence", sentences)
-    })
-    
-    negative.forEach(pattern => {
-        var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
-        console.log("sentences is", sentences)
-        dbUtils.appendItemsToArray(intent, "negGenSentence", sentences)
-    })
-    
-    return { retCode: "success" }
-}
 
 async function generateSentencesForPatterns(intent, patterns){
     if(patterns.length == 0){
@@ -315,9 +346,13 @@ async function generateSentencesForPatterns(intent, patterns){
     var intentParas = await getParasFor(intent)
     var ret = []
 
+    const MAX_SENTENCE_SIZE = 20000
+    var maxDgSize = Math.min(Math.max(Math.floor(MAX_SENTENCE_SIZE / patterns.length), 500), 2000)
+
     patterns.forEach(pattern =>{
+        pattern.labels = calcLabelRatio(pattern.labels, intentPhrase, intentParas, maxDgSize)
+        console.log("sentences labels is: ", pattern.labels)
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
-        console.log("sentences is", sentences)
         ret.push(...sentences)
     })
 
@@ -429,7 +464,6 @@ module.exports = {
     deletePhraseFor,
     labelPredict,
     generateSentencesFor,
-    generateForIntent,
     generateForSlotPos,
     generateForSlotNeg,
     generateForIntentNeg,

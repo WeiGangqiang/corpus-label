@@ -105,11 +105,6 @@ app.post("/generate", async function (req, res) {
     res.send(ret)
 })
 
-//////////////////////////////////////////////////////////////////
-app.post("/remote-dg", async function (req, res) {
-    var ret = await dbApi.generateForIntent(req.body.agent, req.body.user, req.body.modelPath)
-    res.send(ret)
-})
 
 //////////////////////////////////////////////////////////////////
 app.post("/remote-dg/slot", async function (req, res) {
