@@ -353,6 +353,11 @@ async function generateSentencesForPatterns(intent, patterns){
         pattern.labels = calcLabelRatio(pattern.labels, intentPhrase, intentParas, maxDgSize)
         console.log("sentences labels is: ", pattern.labels)
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
+        if(sentences.length < 5){
+            for(var i = 0; i< 3; i++){
+                ret.push(...sentences)
+            }
+        }
         ret.push(...sentences)
     })
 
