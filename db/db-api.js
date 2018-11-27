@@ -354,7 +354,7 @@ async function generateSentencesForPatterns(intent, patterns){
         console.log("sentences labels is: ", pattern.labels)
         var sentences = generateSentences(pattern.sentence, pattern.labels, intentPhrase, intentParas)
         if(sentences.length < 5){
-            for(var i = 0; i< 3; i++){
+            for(var i = 0; i< 10; i++){
                 ret.push(...sentences)
             }
         }
