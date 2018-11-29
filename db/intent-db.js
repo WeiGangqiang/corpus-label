@@ -19,7 +19,7 @@ function formatIntent(intent){
 //////////////////////////////////////////////////////////////////
 async function getIntentsFor(agent, user) {
     const collectionName = dbUtils.getIntentCollectionName(agent, user);
-    var ret = await db.query(`FOR doc IN ${collectionName} return doc `).then(cursor => cursor.all())
+    var ret = await db.query(`FOR doc IN ${collectionName} filter doc.discard != true  return doc `).then(cursor => cursor.all())
         .then(intents => intents.map( intent => {return formatIntent(intent)}),
               err => { console.error("error log", err); return []})
     return ret
